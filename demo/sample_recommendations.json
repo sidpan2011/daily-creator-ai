@@ -1,0 +1,92 @@
+[
+  {
+    "id": "rec_001",
+    "user_id": "user_001",
+    "category": "BUILD",
+    "title": "Build an AI-Powered Email Service",
+    "description": "Create a personalized email recommendation service using Claude 3.5 Sonnet and Resend API. This project combines trending AI technologies with practical email automation.",
+    "next_steps": [
+      "Set up Resend API account and get API key",
+      "Integrate Claude 3.5 Sonnet for content generation",
+      "Create email templates with Jinja2",
+      "Build user profile management system",
+      "Implement recommendation scoring algorithm"
+    ],
+    "trend_connection": "AI email automation is trending with 95% score on GitHub",
+    "difficulty_level": "intermediate",
+    "score": 0.92,
+    "created_at": "2024-01-15T10:30:00Z"
+  },
+  {
+    "id": "rec_002",
+    "user_id": "user_001",
+    "category": "LEARN",
+    "title": "Master MCP Server Integration",
+    "description": "Learn how to build and integrate MCP (Model Context Protocol) servers for seamless AI tool connections. This skill is becoming essential for modern AI applications.",
+    "next_steps": [
+      "Study MCP protocol documentation",
+      "Build a simple MCP server in Python",
+      "Integrate with Claude API using MCP",
+      "Create custom tools for your use case",
+      "Share your MCP server on GitHub"
+    ],
+    "trend_connection": "MCP servers are trending in AI development community",
+    "difficulty_level": "advanced",
+    "score": 0.88,
+    "created_at": "2024-01-15T10:30:00Z"
+  },
+  {
+    "id": "rec_003",
+    "user_id": "user_001",
+    "category": "COLLABORATE",
+    "title": "Contribute to Open Source AI Projects",
+    "description": "Join the growing community of AI developers by contributing to popular open source projects. This will help you learn from experts and build your reputation.",
+    "next_steps": [
+      "Find AI projects that match your interests",
+      "Start with documentation improvements",
+      "Fix small bugs and submit PRs",
+      "Engage with the community on Discord/Slack",
+      "Build your own AI project and open source it"
+    ],
+    "trend_connection": "Open source AI projects are gaining massive traction",
+    "difficulty_level": "beginner",
+    "score": 0.85,
+    "created_at": "2024-01-15T10:30:00Z"
+  },
+  {
+    "id": "rec_004",
+    "user_id": "user_002",
+    "category": "WRITE",
+    "title": "Create a Design System Documentation",
+    "description": "Document your design system and share it with the community. This will establish you as a thought leader in UI/UX design.",
+    "next_steps": [
+      "Audit your existing design components",
+      "Create comprehensive documentation",
+      "Build interactive examples",
+      "Publish on your blog or Medium",
+      "Share on design communities"
+    ],
+    "trend_connection": "Design systems are trending in frontend development",
+    "difficulty_level": "intermediate",
+    "score": 0.90,
+    "created_at": "2024-01-15T10:30:00Z"
+  },
+  {
+    "id": "rec_005",
+    "user_id": "user_003",
+    "category": "BUILD",
+    "title": "Build a Kubernetes Operator",
+    "description": "Create a custom Kubernetes operator for managing complex applications. This advanced project will showcase your cloud-native expertise.",
+    "next_steps": [
+      "Learn Kubernetes operator patterns",
+      "Choose a use case for your operator",
+      "Implement the operator in Go",
+      "Test with local Kubernetes cluster",
+      "Publish operator to operator hub"
+    ],
+    "trend_connection": "Kubernetes operators are essential for cloud-native development",
+    "difficulty_level": "advanced",
+    "score": 0.87,
+    "created_at": "2024-01-15T10:30:00Z"
+  }
+]

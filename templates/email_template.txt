@@ -1,0 +1,42 @@
+🚀 Daily Creator AI - Your Personal Curator
+===============================================
+
+{{ greeting }}
+
+{{ intro }}
+
+{% for recommendation in recommendations %}
+{{ loop.index }}. {{ recommendation.title }}
+   {{ recommendation.description }}
+   
+   Category: {{ recommendation.category }}
+   Difficulty: {{ recommendation.difficulty_level }}
+   Score: {{ "%.0f"|format(recommendation.score * 100) }}%
+   
+   Next Steps:
+   {% for step in recommendation.next_steps %}
+   - {{ step }}
+   {% endfor %}
+   
+   {% if recommendation.trend_connection %}
+   📈 Trend Connection: {{ recommendation.trend_connection }}
+   {% endif %}
+   
+   ---
+
+{% endfor %}
+
+💬 Help us improve your recommendations
+Your feedback helps us personalize future recommendations:
+
+👍 Like: {{ feedback_urls.like }}
+👎 Dislike: {{ feedback_urls.dislike }}
+🔗 Clicked: {{ feedback_urls.clicked }}
+
+{{ closing }}
+
+---
+Daily Creator AI • Powered by Claude 3.5 Sonnet & Resend
+Built for the Resend MCP Hackathon
+
+To unsubscribe or update your preferences, visit: {{ unsubscribe_url }}

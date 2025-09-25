@@ -1,0 +1,127 @@
+{
+  "github_trending": [
+    {
+      "title": "Claude 3.5 Sonnet API",
+      "description": "Advanced AI model for creative and analytical tasks",
+      "url": "https://github.com/anthropics/claude-api",
+      "source": "github",
+      "score": 95.0,
+      "tags": ["ai", "api", "anthropic"],
+      "language": "Python",
+      "stars": 15000,
+      "created_at": "2024-01-14T10:30:00Z"
+    },
+    {
+      "title": "Resend Python SDK",
+      "description": "Email API for developers",
+      "url": "https://github.com/resend/resend-python",
+      "source": "github",
+      "score": 88.0,
+      "tags": ["email", "api", "python"],
+      "language": "Python",
+      "stars": 2500,
+      "created_at": "2024-01-13T10:30:00Z"
+    },
+    {
+      "title": "MCP Server Framework",
+      "description": "Model Context Protocol server implementation",
+      "url": "https://github.com/modelcontextprotocol/server",
+      "source": "github",
+      "score": 82.0,
+      "tags": ["mcp", "protocol", "ai"],
+      "language": "TypeScript",
+      "stars": 1200,
+      "created_at": "2024-01-12T10:30:00Z"
+    }
+  ],
+  "hackernews_top": [
+    {
+      "title": "Building AI-Powered Personal Assistants",
+      "description": "How to create intelligent agents that understand context",
+      "url": "https://news.ycombinator.com/item?id=123456",
+      "source": "hackernews",
+      "score": 92.0,
+      "tags": ["ai", "assistant", "automation"],
+      "created_at": "2024-01-15T07:30:00Z"
+    },
+    {
+      "title": "The Future of Email APIs",
+      "description": "Modern approaches to transactional and marketing emails",
+      "url": "https://news.ycombinator.com/item?id=123457",
+      "source": "hackernews",
+      "score": 85.0,
+      "tags": ["email", "api", "future"],
+      "created_at": "2024-01-15T05:30:00Z"
+    },
+    {
+      "title": "MCP: The Next Generation of AI Tool Integration",
+      "description": "Exploring the Model Context Protocol for seamless AI workflows",
+      "url": "https://news.ycombinator.com/item?id=123458",
+      "source": "hackernews",
+      "score": 78.0,
+      "tags": ["mcp", "ai", "integration"],
+      "created_at": "2024-01-15T03:30:00Z"
+    }
+  ],
+  "producthunt_featured": [
+    {
+      "title": "Daily Creator AI",
+      "description": "AI-powered personal curator for creators",
+      "url": "https://producthunt.com/posts/daily-creator-ai",
+      "source": "producthunt",
+      "score": 90.0,
+      "tags": ["ai", "creator", "productivity"],
+      "created_at": "2024-01-14T10:30:00Z"
+    },
+    {
+      "title": "Claude 3.5 Sonnet",
+      "description": "Advanced AI assistant for complex tasks",
+      "url": "https://producthunt.com/posts/claude-3-5-sonnet",
+      "source": "producthunt",
+      "score": 95.0,
+      "tags": ["ai", "assistant", "productivity"],
+      "created_at": "2024-01-13T10:30:00Z"
+    }
+  ],
+  "reddit_hot": [
+    {
+      "title": "Best AI Tools for Developers in 2024",
+      "description": "Comprehensive list of AI development tools",
+      "url": "https://reddit.com/r/MachineLearning/comments/123456",
+      "source": "reddit",
+      "score": 87.0,
+      "tags": ["ai", "tools", "development"],
+      "created_at": "2024-01-15T08:30:00Z"
+    },
+    {
+      "title": "Building Email Automation with Resend",
+      "description": "Tutorial on creating automated email workflows",
+      "url": "https://reddit.com/r/webdev/comments/123457",
+      "source": "reddit",
+      "score": 83.0,
+      "tags": ["email", "automation", "resend"],
+      "created_at": "2024-01-15T06:30:00Z"
+    }
+  ],
+  "twitter_trending": [
+    {
+      "title": "#AIDevelopment",
+      "description": "Latest trends in AI development and tools",
+      "url": "https://twitter.com/hashtag/AIDevelopment",
+      "source": "twitter",
+      "score": 82.0,
+      "tags": ["ai", "development", "trending"],
+      "created_at": "2024-01-15T09:30:00Z"
+    },
+    {
+      "title": "#MCPProtocol",
+      "description": "Model Context Protocol discussions",
+      "url": "https://twitter.com/hashtag/MCPProtocol",
+      "source": "twitter",
+      "score": 75.0,
+      "tags": ["mcp", "protocol", "ai"],
+      "created_at": "2024-01-15T07:30:00Z"
+    }
+  ],
+  "fetched_at": "2024-01-15T10:30:00Z"
+}
