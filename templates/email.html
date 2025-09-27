@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Your Daily Sparkflow</title>
+    <style>
+        body { 
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
+            max-width: 600px; 
+            margin: 0 auto; 
+            background-color: #f8f9fa;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+        }
+        .header { 
+            text-align: center; 
+            padding: 30px 20px; 
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+        }
+        .header h1 {
+            margin: 0;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        .header p {
+            margin: 10px 0 0 0;
+            font-size: 16px;
+            opacity: 0.9;
+        }
+        .content {
+            padding: 30px 20px;
+        }
+        .recommendation { 
+            background: #f8f9fa; 
+            margin: 20px 0; 
+            padding: 25px; 
+            border-left: 4px solid #007bff; 
+            border-radius: 8px;
+            transition: transform 0.2s ease;
+        }
+        .recommendation:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+        .category { 
+            background: #007bff; 
+            color: white; 
+            padding: 6px 16px; 
+            border-radius: 20px; 
+            font-size: 12px; 
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            display: inline-block;
+            margin-bottom: 15px;
+        }
+        .recommendation h2 {
+            margin: 0 0 15px 0;
+            color: #2c3e50;
+            font-size: 20px;
+            font-weight: 600;
+        }
+        .recommendation p {
+            margin: 0 0 15px 0;
+            color: #555;
+            line-height: 1.6;
+        }
+        .next-steps {
+            background: white;
+            padding: 15px;
+            border-radius: 6px;
+            margin: 15px 0;
+        }
+        .next-steps h4 {
+            margin: 0 0 10px 0;
+            color: #2c3e50;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .next-steps ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+        .next-steps li {
+            margin: 5px 0;
+            color: #555;
+            line-height: 1.5;
+        }
+        .trend-connection {
+            background: #e8f4fd;
+            padding: 15px;
+            border-radius: 6px;
+            margin-top: 15px;
+            border-left: 3px solid #17a2b8;
+        }
+        .trend-connection strong {
+            color: #17a2b8;
+            font-size: 14px;
+        }
+        .trend-connection em {
+            color: #555;
+            font-style: normal;
+        }
+        .footer {
+            text-align: center; 
+            padding: 30px 20px; 
+            color: #666;
+            background: #f8f9fa;
+            border-top: 1px solid #e9ecef;
+        }
+        .footer p {
+            margin: 0;
+            font-size: 14px;
+        }
+        .spark-icon {
+            font-size: 24px;
+            margin-right: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1><span class="spark-icon">⚡</span>Your Daily Sparkflow</h1>
+            <p>Hi {{ user_name }}! Here are today's personalized recommendations:</p>
+        </div>
+        
+        <div class="content">
+            {% for rec in recommendations %}
+            <div class="recommendation">
+                <span class="category">{{ rec.category }}</span>
+                <h2>{{ rec.title }}</h2>
+                <p>{{ rec.description }}</p>
+                
+                <div class="next-steps">
+                    <h4>Next steps:</h4>
+                    <ul>
+                    {% for step in rec.next_steps %}
+                        <li>{{ step }}</li>
+                    {% endfor %}
+                    </ul>
+                </div>
+                
+                <div class="trend-connection">
+                    <strong>Why now:</strong> <em>{{ rec.trend_connection }}</em>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="footer">
+            <p>Made personally for you by Sparkflow AI</p>
+        </div>
+    </div>
+</body>
+</html>

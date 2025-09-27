@@ -1,0 +1,20 @@
+{
+  "alex": {
+    "name": "Alex Chen",
+    "email": "sidh.pan98@gmail.com",
+    "skills": [
+      "React",
+      "Node.js",
+      "Python"
+    ],
+    "interests": [
+      "AI",
+      "productivity",
+      "startups"
+    ],
+    "goals": [
+      "build SaaS",
+      "learn ML"
+    ]
+  }
+}

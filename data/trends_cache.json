@@ -1,0 +1,42 @@
+{
+  "github_trending": [
+    {
+      "name": "microsoft/autogen",
+      "description": "Multi-agent AI framework for building conversational AI applications",
+      "stars": 28000
+    },
+    {
+      "name": "claude-ai/claude-3.5-sonnet",
+      "description": "Latest Claude AI model for advanced reasoning and coding",
+      "stars": 15000
+    },
+    {
+      "name": "vercel/next.js",
+      "description": "The React framework for production",
+      "stars": 120000
+    },
+    {
+      "name": "openai/openai-python",
+      "description": "The official Python library for the OpenAI API",
+      "stars": 45000
+    }
+  ],
+  "hackernews": [
+    {
+      "title": "Show HN: AI coding assistant that understands context",
+      "points": 245,
+      "url": "https://example.com"
+    },
+    {
+      "title": "Ask HN: Best practices for AI integration in web apps",
+      "points": 189,
+      "url": "https://example.com"
+    },
+    {
+      "title": "The future of AI in software development",
+      "points": 312,
+      "url": "https://example.com"
+    }
+  ],
+  "last_updated": "2024-10-15T10:00:00Z"
+}

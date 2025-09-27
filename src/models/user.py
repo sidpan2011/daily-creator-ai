@@ -1,35 +1,21 @@
 """
-User data models for Daily Creator AI
+User data models for Sparkflow
 """
 
+from dataclasses import dataclass
 from typing import List, Optional
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 import uuid
 
-class UserProfile(BaseModel):
-    """User profile for registration and recommendations"""
+@dataclass
+class UserProfile:
+    """User profile for recommendations"""
     name: str
-    email: EmailStr
+    email: str
     skills: List[str]
     interests: List[str]
     goals: List[str]
-    github_username: Optional[str] = None
-    email_time: str = "morning"  # morning, afternoon, evening
-    
-    model_config = {
-        "json_schema_extra": {
-            "example": {
-                "name": "Alex Chen",
-                "email": "alex@example.com",
-                "skills": ["Python", "React", "Machine Learning"],
-                "interests": ["AI", "Web Development", "Open Source"],
-                "goals": ["Build a SaaS product", "Contribute to open source", "Learn Rust"],
-                "github_username": "alexchen",
-                "email_time": "morning"
-            }
-        }
-    }
 
 class User(BaseModel):
     """Complete user model with ID and timestamps"""
@@ -55,8 +41,8 @@ class User(BaseModel):
             skills=profile.skills,
             interests=profile.interests,
             goals=profile.goals,
-            github_username=profile.github_username,
-            email_time=profile.email_time,
+            github_username=None,
+            email_time="morning",
             created_at=now,
             updated_at=now
         )

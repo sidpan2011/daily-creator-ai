@@ -1,126 +1,75 @@
+#!/usr/bin/env python3
 """
-FastAPI application entry point for Daily Creator AI
+Sparkflow - AI-Powered Personalized Newsletter
+Main entry point for generating and sending recommendations
 """
 
-from fastapi import FastAPI
-from fastapi.staticfiles import StaticFiles
-from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import HTMLResponse
-import uvicorn
-import os
-from pathlib import Path
+import asyncio
+import json
+import time
+from src.core.config import get_config
+from src.mcp_orchestrator import MCPOrchestrator  
+from src.ai_engine import AIEngine
+from src.email_sender import EmailSender
+from src.models import UserProfile
 
-from .api.routes import router
-from .core.config import get_settings
-
-# Initialize FastAPI app
-app = FastAPI(
-    title="Daily Creator AI",
-    description="AI-powered personal curator for creators",
-    version="1.0.0",
-    docs_url="/docs",
-    redoc_url="/redoc"
-)
-
-# Get settings
-settings = get_settings()
-
-# Add CORS middleware
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=["*"],  # In production, specify actual origins
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-# Mount static files
-static_path = Path("static")
-if static_path.exists():
-    app.mount("/static", StaticFiles(directory="static"), name="static")
-
-# Include API routes
-app.include_router(router)
-
-@app.get("/", response_class=HTMLResponse)
-async def root():
-    """Serve the main web interface"""
+def load_users():
+    """Load users from JSON file"""
     try:
-        with open("templates/index.html", "r") as f:
-            return HTMLResponse(content=f.read())
+        with open('data/users.json', 'r') as f:
+            return json.load(f)
     except FileNotFoundError:
-        return HTMLResponse(content="""
-        <!DOCTYPE html>
-        <html lang="en">
-        <head>
-            <meta charset="UTF-8">
-            <meta name="viewport" content="width=device-width, initial-scale=1.0">
-            <title>Daily Creator AI</title>
-            <style>
-                body { font-family: Arial, sans-serif; margin: 40px; background: #f5f5f5; }
-                .container { max-width: 800px; margin: 0 auto; background: white; padding: 40px; border-radius: 10px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
-                h1 { color: #2563eb; text-align: center; }
-                .status { background: #fef3c7; padding: 20px; border-radius: 5px; margin: 20px 0; }
-                .api-link { display: inline-block; margin: 10px; padding: 10px 20px; background: #2563eb; color: white; text-decoration: none; border-radius: 5px; }
-                .api-link:hover { background: #1d4ed8; }
-            </style>
-        </head>
-        <body>
-            <div class="container">
-                <h1>🚀 Daily Creator AI</h1>
-                <p style="text-align: center; font-size: 18px; color: #666;">
-                    AI-powered personal curator for creators and developers
-                </p>
-                
-                <div class="status">
-                    <h3>📋 Setup Status</h3>
-                    <p>✅ FastAPI server is running</p>
-                    <p>⚠️ Template files not found - please run demo setup</p>
-                    <p>🔧 Run <code>python run_demo.py</code> to complete setup</p>
-                </div>
-                
-                <div style="text-align: center; margin: 30px 0;">
-                    <a href="/docs" class="api-link">📚 API Documentation</a>
-                    <a href="/health" class="api-link">❤️ Health Check</a>
-                    <a href="/api/demo/simulate" class="api-link">🎬 Demo Simulation</a>
-                </div>
-                
-                <h3>🎯 Features</h3>
-                <ul>
-                    <li>🤖 AI-powered recommendations using Claude 3.5 Sonnet</li>
-                    <li>📧 Beautiful email delivery via Resend MCP</li>
-                    <li>📊 Trending data analysis from multiple sources</li>
-                    <li>👤 Personalized user profiles with GitHub integration</li>
-                    <li>🔄 Real-time feedback and learning</li>
-                </ul>
-                
-                <h3>🚀 Quick Start</h3>
-                <ol>
-                    <li>Run <code>python setup_database.py</code> to create the database</li>
-                    <li>Run <code>python run_demo.py</code> to start the complete demo</li>
-                    <li>Visit <code>http://localhost:8000</code> to see the interface</li>
-                    <li>Try the demo simulation at <code>/api/demo/simulate</code></li>
-                </ol>
-            </div>
-        </body>
-        </html>
-        """)
+        print("❌ No users.json found. Please run demo.py first to create sample data.")
+        return {}
 
-@app.get("/health")
-async def health_check():
-    """Health check endpoint"""
-    return {
-        "status": "healthy",
-        "service": "Daily Creator AI",
-        "version": "1.0.0",
-        "environment": settings.environment
-    }
+async def main():
+    """Main function to generate recommendations for all users"""
+    
+    print("🚀 Starting Sparkflow Newsletter Generation...")
+    
+    # Initialize components
+    config = get_config()
+    config.validate()  # Validate API keys are present
+    mcp_orchestrator = MCPOrchestrator(config)
+    ai_engine = AIEngine(config)
+    email_sender = EmailSender(config, mcp_orchestrator)
+    
+    # Start all MCP servers
+    await mcp_orchestrator.start_all_servers()
+    
+    # Load users
+    users = load_users()
+    
+    if not users:
+        print("❌ No users found. Please run demo.py first to create sample data.")
+        return
+    
+    for user_id, user_data in users.items():
+        print(f"📧 Processing user: {user_data['name']}")
+        
+        try:
+            # 1. Get trending data via MCP
+            trending_data = await mcp_orchestrator.get_trending_data()
+            
+            # 2. Generate AI recommendations  
+            recommendations = await ai_engine.generate_recommendations(
+                user_data, trending_data
+            )
+            
+            # 3. Send email
+            await email_sender.send_newsletter(user_data, recommendations)
+            
+            print(f"✅ Sent newsletter to {user_data['name']}")
+        except Exception as e:
+            print(f"❌ Error processing {user_data['name']}: {e}")
+        
+        # Add small delay to avoid rate limiting
+        await asyncio.sleep(1)
+    
+    # Stop all MCP servers
+    await mcp_orchestrator.stop_all_servers()
+    
+    print("🎉 All newsletters sent!")
 
 if __name__ == "__main__":
-    uvicorn.run(
-        "src.main:app",
-        host=settings.api_host,
-        port=settings.api_port,
-        reload=settings.debug,
-        log_level="info"
-    )
+    asyncio.run(main())
