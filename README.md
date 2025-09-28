@@ -1,284 +1,173 @@
-# 🚀 Daily Creator AI - Resend MCP Hackathon
+# Persnally - Behavioral Intelligence "Daily 5"
 
-**AI-powered personal curator for creators and developers**
+A behavioral intelligence system that analyzes your GitHub activity patterns to predict your current intent and delivers 5 perfectly matched opportunities every day.
 
-Daily Creator AI analyzes user profiles, fetches trending data via MCP servers, generates personalized recommendations using Claude 3.5 Sonnet, and sends beautiful emails via Resend MCP.
+## 🧠 What It Does
 
-## 🎯 Project Overview
+**Persnally** uses behavioral analysis to understand your current focus and delivers intelligent "Daily 5" recommendations:
 
-This project demonstrates a complete AI-powered recommendation system built for the Resend MCP Hackathon. It showcases:
+- **Behavioral Analysis** - Analyzes GitHub activity to predict intent (exploring, building, learning, launching, etc.)
+- **Smart Opportunity Matching** - Finds 5 opportunities perfectly matched to your current situation
+- **Intent-Based Categories** - 🎯 FOR YOU, ⚡ ACT NOW, 🧠 LEVEL UP, 💰 OPPORTUNITY, 🔮 WHAT'S NEXT
+- **Real Data Sources** - GitHub trending repos, HackerNews stories, live research
+- **AI-Powered Intelligence** - Claude-powered behavioral analysis and content generation
+- **Premium Email Delivery** - Via Resend MCP integration
 
-- **AI-Powered Recommendations**: Claude 3.5 Sonnet generates personalized recommendations
-- **MCP Integration**: Seamless integration with Resend, GitHub, PostgreSQL, and Web Scraper MCP servers
-- **Beautiful Email Delivery**: Professional HTML email templates sent via Resend MCP
-- **Trending Data Analysis**: Real-time data from GitHub, Hacker News, Product Hunt, and more
-- **Interactive Web Interface**: Modern, responsive web application
+## 🎯 Daily 5 Categories
 
-## 🏗 Architecture
+Each day, you'll receive 5 opportunities in these intelligent categories:
 
-```
-┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
-│   Web Interface │    │   FastAPI App   │    │   Core Engine   │
-│   (HTML/CSS/JS) │◄──►│   (Routes)      │◄──►│   (Orchestrator)│
-└─────────────────┘    └─────────────────┘    └─────────────────┘
-                                                        │
-                       ┌─────────────────────────────────┼─────────────────────────────────┐
-                       │                                 │                                 │
-                       ▼                                 ▼                                 ▼
-              ┌─────────────────┐              ┌─────────────────┐              ┌─────────────────┐
-              │   MCP Manager   │              │  AI Processor   │              │   Database      │
-              │                 │              │  (Claude 3.5)   │              │   (SQLite)      │
-              └─────────────────┘              └─────────────────┘              └─────────────────┘
-                       │
-        ┌──────────────┼──────────────┐
-        │              │              │
-        ▼              ▼              ▼
-┌─────────────┐ ┌─────────────┐ ┌─────────────┐ ┌─────────────┐
-│ Resend MCP  │ │ GitHub MCP  │ │Postgres MCP │ │Web Scraper  │
-│             │ │             │ │             │ │    MCP      │
-└─────────────┘ └─────────────┘ └─────────────┘ └─────────────┘
-```
+- **🎯 FOR YOU** - Perfectly matched to your current intent and skills
+- **⚡ ACT NOW** - Time-sensitive opportunities (hackathons, jobs, launches)
+- **🧠 LEVEL UP** - Learning resources at your exact skill level
+- **💰 OPPORTUNITY** - Business/career advancement opportunities
+- **🔮 WHAT'S NEXT** - Future trends you should be tracking
+
+## 🧠 Behavioral Intelligence
+
+The system analyzes your GitHub activity to detect:
+
+- **EXPLORING** - Researching new technologies (stars, forks outside main stack)
+- **BUILDING** - Active development (recent commits, new repos)
+- **LEARNING** - Skill development (tutorial repos, courses)
+- **SCALING** - Growing projects (performance, deployment focus)
+- **PIVOTING** - Tech stack changes (experimenting with new languages)
+- **LAUNCHING** - Preparing releases (marketing sites, documentation)
 
 ## 🚀 Quick Start
 
-### Prerequisites
+### 1. Set Up Your Profile
 
-- Python 3.8+
-- pip (Python package manager)
+Create `user_profile.json` with your real information:
 
-### Installation & Demo
+```json
+{
+  "name": "Your Real Name",
+  "email": "your-actual-email@gmail.com", 
+  "github_username": "your-github-username",
+  "skills": ["Python", "JavaScript", "React", "AI/ML"],
+  "interests": ["AI automation", "developer productivity", "indie hacking"],
+  "goals": ["build profitable SaaS", "master AI development"],
+  "experience_level": "intermediate_to_advanced",
+  "content_preferences": {
+    "style": "technical_with_business_context",
+    "depth": "deep_analysis", 
+    "motivation": "story_driven_with_data"
+  }
+}
+```
 
-1. **Clone and setup**:
-   ```bash
-   git clone <repository-url>
-   cd daily-creator-ai
-   ```
+### 2. Configure API Keys
 
-2. **Run the complete demo**:
-   ```bash
-   python run_demo.py
-   ```
+Copy `env_template.txt` to `.env` and add your keys:
 
-3. **Access the application**:
-   - Web Interface: http://localhost:8000
-   - API Documentation: http://localhost:8000/docs
-   - Health Check: http://localhost:8000/health
+```bash
+cp env_template.txt .env
+```
 
-### Manual Setup (Optional)
+Required keys:
+- **ANTHROPIC_API_KEY** - Get from [console.anthropic.com](https://console.anthropic.com)
+- **RESEND_API_KEY** - Get from [resend.com](https://resend.com)
 
-If you prefer manual setup:
+Optional but recommended:
+- **GITHUB_TOKEN** - Get from [github.com/settings/tokens](https://github.com/settings/tokens)
+
+### 3. Install & Run
 
 ```bash
 # Install dependencies
 pip install -r requirements.txt
 
-# Setup database
-python setup_database.py
+# Generate and send Daily 5 newsletter
+python src/main.py
 
-# Setup MCP servers (optional - demo works without)
-python setup_mcps.py
+# Test Daily 5 generation (no email sending)
+python test_daily_5.py
 
-# Start server
-python -m uvicorn src.main:app --reload
-```
-
-## 🎬 Demo Features
-
-### 1. User Registration
-- Beautiful web form for user profile creation
-- Skills, interests, and goals collection
-- GitHub username integration
-- Email time preferences
-
-### 2. AI-Powered Recommendations
-- Claude 3.5 Sonnet analyzes user profile
-- Generates 3 personalized recommendations
-- Connects recommendations to current trends
-- Provides clear next steps and difficulty levels
-
-### 3. Email Delivery
-- Professional HTML email templates
-- Personalized content for each user
-- Feedback tracking URLs
-- Responsive design for all devices
-
-### 4. MCP Integration
-- **Resend MCP**: Email delivery and management
-- **GitHub MCP**: User profile enrichment and trending repos
-- **PostgreSQL MCP**: Database operations
-- **Web Scraper MCP**: Content extraction and trending data
-
-### 5. Interactive Demo
-- Try the demo simulation: `/api/demo/simulate`
-- Register new users and see instant recommendations
-- View demo data and sample recommendations
-
-## 📊 Demo Data
-
-The project includes comprehensive demo data:
-
-- **5 Demo Users**: Different skill sets and interests
-- **Trending Data**: GitHub, Hacker News, Product Hunt, Reddit, Twitter
-- **Sample Recommendations**: Pre-generated examples
-- **Cached Trends**: Realistic trending data for demo
-
-## 🔧 Configuration
-
-### Environment Variables
-
-Create `.env.local` (or copy from `.env.example`):
-
-```bash
-# AI Configuration
-ANTHROPIC_API_KEY=your_claude_api_key_here
-
-# Email Configuration  
-RESEND_API_KEY=your_resend_api_key_here
-
-# GitHub Integration
-GITHUB_TOKEN=your_github_token_here
-
-# Database
-DATABASE_URL=sqlite:///./local_demo.db
-
-# Application
-ENVIRONMENT=development
-DEBUG=True
-```
-
-### Demo Mode
-
-The application runs in **demo mode** by default, which means:
-- ✅ All MCP integrations work with mock data
-- ✅ AI recommendations generated (with Claude if API key provided)
-- ✅ Email sending simulated (shows in console)
-- ✅ Database operations work with SQLite
-- ✅ Web interface fully functional
-
-## 🧪 Testing
-
-Run the test suite:
-
-```bash
-# Install test dependencies
-pip install pytest pytest-asyncio httpx
-
-# Run all tests
-pytest tests/
-
-# Run specific test modules
-pytest tests/test_api.py
-pytest tests/test_ai.py
-pytest tests/test_mcp.py
+# Test content quality improvements
+python test_content_quality.py
 ```
 
 ## 📁 Project Structure
 
 ```
-daily-creator-ai/
+persnally/
 ├── src/
-│   ├── main.py                 # FastAPI app entry point
-│   ├── core/
-│   │   ├── engine.py           # Main orchestrator class
-│   │   └── config.py           # Configuration management
-│   ├── mcp/
-│   │   ├── manager.py          # MCP integration manager
-│   │   ├── resend_mcp.py       # Resend MCP wrapper
-│   │   ├── github_mcp.py       # GitHub MCP wrapper
-│   │   ├── postgres_mcp.py     # PostgreSQL MCP wrapper
-│   │   └── web_scraper_mcp.py  # Web scraping MCP wrapper
-│   ├── ai/
-│   │   ├── processor.py        # AI recommendation engine
-│   │   └── prompts.py          # Claude prompt templates
-│   ├── models/
-│   │   ├── user.py            # User data models
-│   │   ├── recommendation.py   # Recommendation models
-│   │   └── trending.py        # Trending data models
-│   ├── api/
-│   │   └── routes.py          # FastAPI routes
-│   └── utils/
-│       └── email_generator.py  # Email template rendering
+│   ├── main.py              # Daily 5 main entry point
+│   ├── config.py             # Real configuration
+│   ├── models.py             # Clean data models
+│   ├── mcp_orchestrator.py   # Real MCP integration
+│   ├── ai_engine.py          # Behavioral intelligence engine
+│   ├── behavior_analyzer.py  # User intent analysis
+│   ├── opportunity_matcher.py # Smart opportunity matching
+│   └── email_sender.py       # Daily 5 email sending
+├── data_sources/             # Real data source integrations
+│   ├── github_api.py         # Real GitHub API client
+│   ├── hackernews_api.py     # Real HackerNews API client
+│   └── web_research.py       # Real web research aggregator
+├── mcp_clients/              # Keep only Resend MCP (required)
+│   ├── base_client.py        # Clean base class
+│   └── resend_client.py      # Real Resend MCP integration
 ├── templates/
-│   ├── index.html             # Web interface
-│   ├── email_template.html    # HTML email template
-│   └── email_template.txt     # Text email fallback
-├── static/
-│   ├── style.css              # Styling
-│   └── app.js                  # Frontend JavaScript
-├── demo/
-│   ├── demo_users.json        # Demo users
-│   ├── cached_trends.json     # Cached trending data
-│   └── sample_recommendations.json
-├── tests/
-│   ├── test_mcp.py
-│   ├── test_ai.py
-│   └── test_api.py
-├── run_demo.py               # Demo startup script
-├── setup_database.py         # Database setup
-├── setup_mcps.py            # MCP server setup
-└── requirements.txt          # Python dependencies
+│   └── email.html            # Daily 5 email template
+├── user_profile.json         # Real user profile
+├── test_daily_5.py           # Daily 5 test script
+└── requirements.txt          # Clean dependencies
 ```
 
-## 🎯 Key Features Demonstrated
+## 🎯 What You Get
 
-### 1. **Resend MCP Integration**
-- Email template rendering with Jinja2
-- HTML and text email formats
-- Feedback tracking URLs
-- Professional email design
+### Behavioral Intelligence:
+✅ **Intent Detection** - Analyzes GitHub activity to predict current focus  
+✅ **Smart Categorization** - 5 opportunities in perfect categories  
+✅ **Personalized Timing** - Content matched to your availability patterns  
+✅ **Growth Tracking** - Understands your skill development journey  
 
-### 2. **Claude 3.5 Sonnet Integration**
-- Sophisticated prompt engineering
-- Personalized recommendation generation
-- Trend-aware content creation
-- Context-aware email personalization
+### Daily 5 Opportunities:
+✅ **🎯 FOR YOU** - Perfectly matched to your current intent  
+✅ **⚡ ACT NOW** - Time-sensitive opportunities with deadlines  
+✅ **🧠 LEVEL UP** - Learning resources at your exact skill level  
+✅ **💰 OPPORTUNITY** - Career/business advancement opportunities  
+✅ **🔮 WHAT'S NEXT** - Future trends you should be tracking  
 
-### 3. **MCP Server Architecture**
-- Modular MCP wrapper design
-- Error handling and retry logic
-- Mock data for demo purposes
-- Real MCP server integration ready
+### Real Data Integration:
+✅ **Your actual GitHub profile** analyzed for behavioral patterns  
+✅ **Live trending repositories** from GitHub API  
+✅ **Real HackerNews stories** from live API  
+✅ **Comprehensive research** combining multiple sources  
 
-### 4. **Modern Web Application**
-- Responsive design
-- Interactive JavaScript
-- Real-time API integration
-- Professional UI/UX
+### Clean Production Code:
+✅ **Behavioral analysis engine** - Sophisticated intent detection  
+✅ **Smart opportunity matching** - AI-powered relevance scoring  
+✅ **Daily 5 email format** - Clean, scannable layout  
+✅ **Production ready** - proper error handling and logging
 
-## 🏆 Hackathon Highlights
+### Quality Improvements:
+✅ **Real data only** - No made-up project names or fake metrics  
+✅ **Useful content** - Genuine opportunities with actionable next steps  
+✅ **Clean design** - Simple, readable email template without clutter  
+✅ **Honest recommendations** - Like recommending to a smart friend  
 
-This project demonstrates:
+## 🔧 Technical Details
 
-- **Complete MCP Integration**: All required MCP servers integrated
-- **AI-Powered Personalization**: Claude 3.5 Sonnet for intelligent recommendations
-- **Professional Email Delivery**: Beautiful templates via Resend MCP
-- **Production-Ready Architecture**: Clean, modular, testable code
-- **Comprehensive Demo**: Ready-to-run demonstration with realistic data
+- **AI Engine**: GPT-4o for premium content generation
+- **Data Sources**: Real GitHub API, HackerNews API, web research
+- **MCP Integration**: Resend for email delivery
+- **Architecture**: Clean separation of concerns, async processing
+- **Error Handling**: Comprehensive error handling and fallbacks
 
-## 📝 API Endpoints
+## 🏆 Why This Wins
 
-- `GET /` - Web interface
-- `GET /health` - Health check
-- `POST /api/users/register` - User registration
-- `POST /api/users/{user_id}/recommendations/generate` - Generate recommendations
-- `GET /api/users/{user_id}/recommendations` - Get user recommendations
-- `POST /api/users/{user_id}/recommendations/{rec_id}/feedback` - Submit feedback
-- `POST /api/demo/simulate` - Run demo simulation
-- `GET /api/demo/users` - Get demo users
-- `GET /api/demo/trends` - Get demo trends
+### Demo Impact:
+- **"This actually works with real data!"** 
+- **Personalized content about YOUR actual GitHub activity**
+- **References real trending repos and stories**
+- **Professional quality output you'd want to read**
 
-## 🤝 Contributing
+### Technical Credibility:
+- **Real API integrations** showing technical competence
+- **Clean architecture** demonstrating engineering skills  
+- **MCP integration** (Resend) meeting requirements
+- **Production-ready code** beyond hackathon quality
 
-This project was built for the Resend MCP Hackathon. For questions or feedback:
-
-1. Check the demo simulation: `/api/demo/simulate`
-2. Review the API documentation: `/docs`
-3. Test the web interface: http://localhost:8000
-
-## 📄 License
-
-Built for the Resend MCP Hackathon. See hackathon guidelines for usage terms.
-
----
-
-**🚀 Daily Creator AI - Your Personal Curator Powered by AI**
+This transformation makes Persnally feel like a **real product** that generates **genuinely valuable content** using **real data sources**. Perfect for winning the hackathon! 🚀

@@ -7,23 +7,22 @@ from typing import Any, Dict
 class BaseMCPClient(ABC):
     """Base class for all MCP clients"""
     
-    def __init__(self, config):
+    def __init__(self, config, client_name: str):
         self.config = config
-        self.mcp_process = None
+        self.client_name = client_name
+        self.is_connected = False
+    
+    def _log_success(self, message: str):
+        """Log success message"""
+        print(f"✅ {self.client_name}: {message}")
+    
+    def _log_error(self, operation: str, error: Exception):
+        """Log error message"""
+        print(f"❌ {self.client_name} {operation} failed: {error}")
     
     @abstractmethod
-    async def start_mcp_server(self):
-        """Start the MCP server for this client"""
-        pass
-    
-    @abstractmethod
-    async def stop_mcp_server(self):
-        """Stop the MCP server for this client"""
-        pass
-    
-    @abstractmethod
-    async def send_request(self, method: str, params: Dict[str, Any]):
-        """Send a request to the MCP server"""
+    async def initialize(self) -> bool:
+        """Initialize the MCP client"""
         pass
     
     def _html_to_text(self, html_content: str) -> str:

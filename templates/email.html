@@ -1,162 +1,407 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
+
 <head>
-    <meta charset="utf-8">
-    <title>Your Daily Sparkflow</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Update of the day: {{ date }}</title>
     <style>
-        body { 
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; 
-            max-width: 600px; 
-            margin: 0 auto; 
-            background-color: #f8f9fa;
-            padding: 20px;
-        }
-        .container {
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-        }
-        .header { 
-            text-align: center; 
-            padding: 30px 20px; 
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-        }
-        .header h1 {
+        /* Reset and base styles */
+        * {
             margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+            line-height: 1.6;
+            color: #1a1a1a;
+            background-color: #ffffff;
+            -webkit-text-size-adjust: 100%;
+            -ms-text-size-adjust: 100%;
+        }
+
+        /* Container */
+        .email-container {
+            max-width: 680px;
+            margin: 0 auto;
+            background-color: #ffffff;
+        }
+
+        /* Header */
+        .header {
+            text-align: center;
+            padding: 48px 24px;
+            background-color: #ffffff;
+        }
+
+        .logo {
             font-size: 28px;
-            font-weight: 700;
+            font-weight: 600;
+            color: #000000;
+            letter-spacing: -0.02em;
         }
-        .header p {
-            margin: 10px 0 0 0;
-            font-size: 16px;
-            opacity: 0.9;
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background-color: #e5e5e5;
+            margin: 0 24px;
         }
+
+        /* Content */
         .content {
-            padding: 30px 20px;
+            padding: 0 24px 48px 24px;
         }
-        .recommendation { 
-            background: #f8f9fa; 
-            margin: 20px 0; 
-            padding: 25px; 
-            border-left: 4px solid #007bff; 
+
+        /* Article Item */
+        .article-item {
+            margin-top: 48px;
+        }
+
+        .article-item:first-child {
+            margin-top: 48px;
+        }
+
+        .article-number {
+            display: inline-block;
+            background-color: #f5f5f5;
+            color: #6b7280;
+            padding: 4px 12px;
+            border-radius: 16px;
+            font-size: 14px;
+            font-weight: 500;
+            margin-bottom: 16px;
+        }
+
+        .content-tag {
+            display: inline-block;
+            background-color: #1a1a1a;
+            color: #ffffff;
+            padding: 2px 8px;
             border-radius: 8px;
-            transition: transform 0.2s ease;
-        }
-        .recommendation:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
-        }
-        .category { 
-            background: #007bff; 
-            color: white; 
-            padding: 6px 16px; 
-            border-radius: 20px; 
-            font-size: 12px; 
+            font-size: 11px;
             font-weight: 600;
             text-transform: uppercase;
+            margin-left: 8px;
             letter-spacing: 0.5px;
-            display: inline-block;
-            margin-bottom: 15px;
         }
-        .recommendation h2 {
-            margin: 0 0 15px 0;
-            color: #2c3e50;
-            font-size: 20px;
+
+        .article-title {
+            font-size: 24px;
             font-weight: 600;
+            color: #000000;
+            line-height: 1.3;
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
         }
-        .recommendation p {
-            margin: 0 0 15px 0;
-            color: #555;
+
+        .article-image {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+            border-radius: 12px;
+            margin: 20px 0;
+            border: 1px solid #e5e5e5;
+            display: block;
+        }
+
+        .article-description {
+            font-size: 16px;
             line-height: 1.6;
+            color: #374151;
+            margin-bottom: 24px;
         }
-        .next-steps {
-            background: white;
-            padding: 15px;
-            border-radius: 6px;
-            margin: 15px 0;
+
+        .article-description p {
+            margin-bottom: 16px;
         }
-        .next-steps h4 {
-            margin: 0 0 10px 0;
-            color: #2c3e50;
-            font-size: 14px;
-            font-weight: 600;
+
+        .article-description p:last-child {
+            margin-bottom: 0;
         }
-        .next-steps ul {
-            margin: 0;
+
+        .article-description ul {
+            margin: 16px 0;
             padding-left: 20px;
         }
-        .next-steps li {
-            margin: 5px 0;
-            color: #555;
+
+        .article-description li {
+            margin-bottom: 8px;
             line-height: 1.5;
         }
-        .trend-connection {
-            background: #e8f4fd;
-            padding: 15px;
+
+        .article-description strong {
+            color: #1a1a1a;
+            font-weight: 600;
+        }
+
+        .article-description a {
+            color: #2563eb;
+            text-decoration: none;
+        }
+
+        .article-description a:hover {
+            text-decoration: underline;
+        }
+
+        /* Action buttons container */
+        .article-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 24px;
+        }
+
+        .read-more-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 10px 20px;
+            text-decoration: none;
             border-radius: 6px;
-            margin-top: 15px;
-            border-left: 3px solid #17a2b8;
-        }
-        .trend-connection strong {
-            color: #17a2b8;
             font-size: 14px;
+            font-weight: 500;
+            transition: background-color 0.2s ease;
         }
-        .trend-connection em {
-            color: #555;
-            font-style: normal;
+
+        /* .read-more-btn:hover {
+            background-color: #1a1a1a;
+        } */
+
+        .feedback-buttons {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            gap: 8px;
         }
+
+        .feedback-btn {
+            display: flex;
+            align-items: center;
+            text-align: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: #f9f9f9;
+            border: 1px solid #e5e5e5;
+            border-radius: 8px;
+            text-decoration: none;
+            font-size: 18px;
+            line-height: 1;
+            transition: all 0.2s ease;
+        }
+
+        .feedback-btn:hover {
+            background-color: #f0f0f0;
+            border-color: #d1d1d1;
+        }
+
+        .feedback-btn.upvote:hover {
+            background-color: #f0f9ff;
+            border-color: #93c5fd;
+        }
+
+        .feedback-btn.downvote:hover {
+            background-color: #fef2f2;
+            border-color: #fca5a5;
+        }
+
+        /* Key Insights Section */
+        .key-insights {
+            margin-top: 56px;
+            padding-top: 32px;
+            border-top: 1px solid #e5e5e5;
+        }
+
+        .insights-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #000000;
+            margin-bottom: 20px;
+            letter-spacing: -0.01em;
+        }
+
+        .insights-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .insights-list li {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 16px;
+            line-height: 1.5;
+            color: #374151;
+        }
+
+        .insights-list li:last-child {
+            margin-bottom: 0;
+        }
+
+        .insights-list li:before {
+            content: "•";
+            color: #6b7280;
+            font-size: 18px;
+            margin-right: 12px;
+            margin-top: -2px;
+        }
+
+        /* Footer */
         .footer {
-            text-align: center; 
-            padding: 30px 20px; 
-            color: #666;
-            background: #f8f9fa;
-            border-top: 1px solid #e9ecef;
+            margin-top: 56px;
+            padding: 32px 24px;
+            border-top: 1px solid #e5e5e5;
+            text-align: center;
         }
-        .footer p {
-            margin: 0;
+
+        .footer-brand {
+            font-size: 16px;
+            font-weight: 500;
+            color: #000000;
+            margin-bottom: 8px;
+        }
+
+        .footer-tagline {
+            font-size: 14px;
+            color: #6b7280;
+            margin-bottom: 16px;
+        }
+
+        .footer-links {
             font-size: 14px;
         }
-        .spark-icon {
-            font-size: 24px;
-            margin-right: 8px;
+
+        .footer-links a {
+            color: #6b7280;
+            text-decoration: none;
+            margin: 0 12px;
+        }
+
+        .footer-links a:hover {
+            color: #374151;
+            text-decoration: underline;
+        }
+
+        /* Responsive */
+        @media (max-width: 640px) {
+            .header {
+                padding: 32px 20px;
+            }
+
+            .content {
+                padding: 0 20px 32px 20px;
+            }
+
+            .divider {
+                margin: 0 20px;
+            }
+
+            .article-item {
+                margin-top: 32px;
+            }
+
+            .article-item:first-child {
+                margin-top: 32px;
+            }
+
+            .article-title {
+                font-size: 20px;
+            }
+
+            .article-actions {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 16px;
+            }
+
+            .footer {
+                padding: 24px 20px;
+            }
         }
     </style>
 </head>
+
 <body>
-    <div class="container">
+    <div class="email-container">
+        <!-- Header -->
         <div class="header">
-            <h1><span class="spark-icon">⚡</span>Your Daily Sparkflow</h1>
-            <p>Hi {{ user_name }}! Here are today's personalized recommendations:</p>
+            <div class="logo">Persnally</div>
         </div>
-        
+
+        <!-- Divider -->
+        <div class="divider"></div>
+
+        <!-- Content -->
         <div class="content">
-            {% for rec in recommendations %}
-            <div class="recommendation">
-                <span class="category">{{ rec.category }}</span>
-                <h2>{{ rec.title }}</h2>
-                <p>{{ rec.description }}</p>
-                
-                <div class="next-steps">
-                    <h4>Next steps:</h4>
-                    <ul>
-                    {% for step in rec.next_steps %}
-                        <li>{{ step }}</li>
-                    {% endfor %}
-                    </ul>
+            {% if items and items|length > 0 %}
+            {% for item in items %}
+            <div class="article-item">
+                <div class="article-number">#{{ loop.index }} <span class="content-tag">{{ item.content_tag or 'TECH' }}</span></div>
+                <h2 class="article-title">{{ item.title }}</h2>
+                <div class="article-description">
+                    {{ item.description | safe }}
                 </div>
-                
-                <div class="trend-connection">
-                    <strong>Why now:</strong> <em>{{ rec.trend_connection }}</em>
+                <div class="article-actions">
+                    {% if item.url %}
+                    <a href="{{ item.url }}" class="read-more-btn">Read More</a>
+                    {% endif %}
+                    <div class="feedback-buttons">
+                        <a href="{{ item.upvote_url or '#' }}" class="feedback-btn upvote">👍</a>
+                        <a href="{{ item.downvote_url or '#' }}" class="feedback-btn downvote">👎</a>
+                    </div>
                 </div>
             </div>
             {% endfor %}
+            {% elif updates and updates|length > 0 %}
+            <!-- Legacy updates format -->
+            {% for update in updates %}
+            <div class="article-item">
+                <div class="article-number">#{{ update.number }}</div>
+                <h2 class="article-title">{{ update.title }}</h2>
+                {% if update.image %}
+                <img src="{{ update.image }}" alt="{{ update.title }}" class="article-image">
+                {% endif %}
+                <div class="article-description">
+                    {{ update.content | safe }}
+                </div>
+                <div class="article-actions">
+                    {% if update.url %}
+                    <a href="{{ update.url }}" class="read-more-btn">Read More</a>
+                    {% endif %}
+                    <div class="feedback-buttons">
+                        <a href="{{ update.upvote_url or '#' }}" class="feedback-btn upvote">👍</a>
+                        <a href="{{ update.downvote_url or '#' }}" class="feedback-btn downvote">👎</a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% endif %}
+
+            {% if key_insights and key_insights|length > 0 %}
+            <div class="key-insights">
+                <h3 class="insights-title">Key Insights</h3>
+                <ul class="insights-list">
+                    {% for insight in key_insights %}
+                    <li>{{ insight }}</li>
+                    {% endfor %}
+                </ul>
+            </div>
+            {% endif %}
         </div>
-        
+
+        <!-- Footer -->
         <div class="footer">
-            <p>Made personally for you by Sparkflow AI</p>
+            <div class="footer-brand">Persnally</div>
+            <div class="footer-tagline">Your personal intelligence briefing</div>
+            <div class="footer-links">
+                <a href="#">Update Preferences</a>
+                <a href="#">Unsubscribe</a>
+            </div>
         </div>
     </div>
 </body>
+
 </html>

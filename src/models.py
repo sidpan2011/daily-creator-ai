@@ -1,31 +1,41 @@
 """
-Simple data models for Sparkflow
+Clean Data Models for Real Data Processing
 """
-
 from dataclasses import dataclass
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional
+from datetime import datetime
 
 @dataclass
 class UserProfile:
-    """User profile for recommendations"""
     name: str
     email: str
+    github_username: Optional[str]
     skills: List[str]
     interests: List[str]
     goals: List[str]
-
-@dataclass 
-class Recommendation:
-    """AI-generated recommendation"""
-    category: str  # BUILD, WRITE, LEARN
-    title: str
-    description: str
-    next_steps: List[str]
-    trend_connection: str
+    experience_level: str
+    content_preferences: Dict[str, str]
 
 @dataclass
-class TrendingData:
-    """Trending data from various sources"""
-    github_repos: List[Dict[str, Any]]
-    hackernews_topics: List[Dict[str, Any]]
+class ResearchData:
+    trending_repos: List[Dict[str, Any]]
+    hackernews_stories: List[Dict[str, Any]]
+    user_context: Dict[str, Any]
+    language_trends: Dict[str, List[Dict[str, Any]]]
     timestamp: str
+
+@dataclass
+class EditorialContent:
+    headline: str
+    content: str
+    key_insights: List[str]
+    date: str
+    data_sources: List[str]
+
+@dataclass
+class TopicSelection:
+    selected_topic: str
+    angle: str
+    supporting_data: List[str]
+    why_now: str
+    personal_relevance: str
