@@ -1,6 +1,6 @@
 """
 Enhanced Web Crawler for Niche, Specific Content
-Fetches current, relevant content from multiple sources
+Fetches current, relevant content from multiple sources including news sites
 """
 import asyncio
 import httpx
@@ -8,6 +8,7 @@ import json
 from typing import List, Dict, Any
 from datetime import datetime, timedelta
 import re
+from .realtime_web_crawler import RealTimeWebCrawler
 
 class EnhancedWebCrawler:
     def __init__(self):
@@ -20,9 +21,11 @@ class EnhancedWebCrawler:
             "reddit_webdev": "https://www.reddit.com/r/webdev/hot.json",
             "reddit_startups": "https://www.reddit.com/r/startups/hot.json"
         }
+        # Use real-time web crawler for news sources
+        self.web_crawler = None
     
     async def crawl_comprehensive_content(self, user_interests: List[str]) -> Dict[str, Any]:
-        """Crawl multiple sources for comprehensive, current content"""
+        """Crawl multiple sources for comprehensive, current content including news sites"""
         print("🕷️ Enhanced web crawling for niche content...")
         
         crawled_data = {
@@ -33,7 +36,16 @@ class EnhancedWebCrawler:
         }
         
         try:
-            # Crawl each source
+            # CRITICAL: Use RealTimeWebCrawler for news sources (Google News, TechCrunch, Verge, Wired)
+            print("📰 Fetching from news sources (Google News, TechCrunch, The Verge, Wired)...")
+            async with RealTimeWebCrawler() as crawler:
+                news_articles = await crawler.get_fresh_tech_news(user_interests)
+                crawled_data["fresh_updates"].extend(news_articles)
+                if news_articles:
+                    crawled_data["sources_crawled"].append("news_sources")
+                    print(f"  ✅ Got {len(news_articles)} articles from news sources")
+            
+            # Crawl other sources (dev.to, reddit, product hunt)
             tasks = [
                 self._crawl_dev_to(user_interests),
                 self._crawl_reddit_sources(user_interests),
@@ -46,16 +58,20 @@ class EnhancedWebCrawler:
                 if isinstance(result, Exception):
                     print(f"⚠️ Crawling task {i} failed: {result}")
                 else:
-                    crawled_data.update(result)
+                    if result and result.get("fresh_updates"):
+                        crawled_data["fresh_updates"].extend(result.get("fresh_updates", []))
+                        crawled_data["sources_crawled"].extend(result.get("sources_crawled", []))
             
             # Filter for freshness (last 7 days)
             crawled_data["fresh_updates"] = self._filter_fresh_content(crawled_data.get("fresh_updates", []))
             
-            print(f"✅ Crawled {len(crawled_data['fresh_updates'])} fresh updates from {len(crawled_data['sources_crawled'])} sources")
+            print(f"✅ Total: {len(crawled_data['fresh_updates'])} fresh updates from {len(crawled_data['sources_crawled'])} source types")
             return crawled_data
             
         except Exception as e:
             print(f"❌ Enhanced crawling failed: {e}")
+            import traceback
+            traceback.print_exc()
             return crawled_data
     
     async def _crawl_dev_to(self, user_interests: List[str]) -> Dict[str, Any]:
@@ -220,29 +236,42 @@ class EnhancedWebCrawler:
         return keyword_map.get(interest, [])
     
     def _filter_fresh_content(self, content_list: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
-        """Filter content to only include items from last 7 days"""
+        """Filter content - lenient approach, include items even without dates"""
         fresh_content = []
-        cutoff_date = datetime.now() - timedelta(days=7)
-        
+        cutoff_date = datetime.now() - timedelta(days=30)  # Extended to 30 days for more content
+
         for item in content_list:
             try:
                 # Handle different date formats
+                has_date = False
+                published_date = None
+
                 if "published_at" in item:
-                    published_date = datetime.fromisoformat(item["published_at"].replace("Z", "+00:00"))
-                elif "created_utc" in item:
-                    published_date = datetime.fromtimestamp(item["created_utc"])
-                else:
-                    continue
-                
-                if published_date >= cutoff_date:
+                    try:
+                        published_date = datetime.fromisoformat(item["published_at"].replace("Z", "+00:00"))
+                        has_date = True
+                    except:
+                        pass
+
+                if not has_date and "created_utc" in item:
+                    try:
+                        published_date = datetime.fromtimestamp(item["created_utc"])
+                        has_date = True
+                    except:
+                        pass
+
+                # LENIENT: If no date found, INCLUDE the item (assume it's recent)
+                if not has_date:
                     fresh_content.append(item)
-                    
+                elif published_date and published_date >= cutoff_date:
+                    fresh_content.append(item)
+
             except Exception as e:
-                print(f"⚠️ Date parsing failed for item: {e}")
-                continue
-        
+                # On error, include the item anyway
+                fresh_content.append(item)
+
         # Sort by relevance score
         fresh_content.sort(key=lambda x: x.get("relevance_score", 0), reverse=True)
-        
-        print(f"🕒 Filtered to {len(fresh_content)} fresh updates from last 7 days")
+
+        print(f"🕒 Found {len(fresh_content)} relevant updates (lenient filtering)")
         return fresh_content

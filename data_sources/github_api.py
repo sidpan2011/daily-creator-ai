@@ -5,7 +5,7 @@ Fetches live trending repositories and user data
 import asyncio
 import httpx
 from typing import List, Dict, Any, Optional
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 
 class GitHubAPIClient:
     def __init__(self, token: Optional[str] = None):
@@ -32,7 +32,7 @@ class GitHubAPIClient:
                 # Get ALL user's repositories (including private if token is provided)
                 repos_response = await client.get(
                     f"{self.base_url}/user/repos" if self.token else f"{self.base_url}/users/{username}/repos",
-                    params={"sort": "updated", "per_page": 30, "visibility": "all"},
+                    params={"sort": "updated", "per_page": 50, "visibility": "all"},  # Increased from 30
                     headers=self.headers
                 )
                 
@@ -71,6 +71,13 @@ class GitHubAPIClient:
                     # Analyze repository patterns
                     repo_analysis = self._analyze_repository_patterns(repos)
                     
+                    # Get active repositories with better detection
+                    active_repos = self._get_active_repositories(repos)
+                    
+                    print(f"📊 Activity Analysis:")
+                    print(f"   - Total repos: {len(repos)}")
+                    print(f"   - Active repos (30 days): {len(active_repos)}")
+                    
                     return {
                         "user_info": {
                             "name": user_data.get("name"),
@@ -107,7 +114,8 @@ class GitHubAPIClient:
                             for repo in starred[:15]
                         ],
                         "readme_content": readme_content,
-                        "repo_analysis": repo_analysis
+                        "repo_analysis": repo_analysis,
+                        "active_repos": active_repos
                     }
                 
         except Exception as e:
@@ -132,6 +140,60 @@ class GitHubAPIClient:
             pass
         
         return ""
+    
+    def _get_active_repositories(self, repos: List[Dict]) -> List[Dict]:
+        """
+        Get repositories with recent activity.
+        Priority order:
+        1. Repos with commits in last 30 days (not 7 days)
+        2. If none, repos with commits in last 90 days
+        3. If none, 5 most recently pushed repos
+        4. If none, all repos sorted by stars/forks
+        """
+        try:
+            # Try 30 days first
+            active_repos_30d = self._filter_by_activity(repos, days=30)
+            if active_repos_30d:
+                print(f"   - Found {len(active_repos_30d)} repos with activity in last 30 days")
+                return active_repos_30d[:10]  # Top 10 most active
+            
+            # Fallback to 90 days
+            active_repos_90d = self._filter_by_activity(repos, days=90)
+            if active_repos_90d:
+                print(f"   - Found {len(active_repos_90d)} repos with activity in last 90 days")
+                return active_repos_90d[:10]
+            
+            # Fallback to most recently pushed
+            sorted_repos = sorted(repos, key=lambda x: x.get('pushed_at', ''), reverse=True)
+            print(f"   - Using {len(sorted_repos[:10])} most recently pushed repos")
+            return sorted_repos[:10]
+        
+        except Exception as e:
+            print(f"Error getting active repos: {e}")
+            return repos[:10] if repos else []
+
+    def _filter_by_activity(self, repos: List[Dict], days: int) -> List[Dict]:
+        """Filter repos by activity within specified days"""
+        active = []
+        cutoff_date = datetime.now(timezone.utc) - timedelta(days=days)
+        
+        for repo in repos:
+            pushed_at = repo.get('pushed_at')
+            if pushed_at:
+                try:
+                    # Parse the pushed_at date
+                    if 'T' in pushed_at:
+                        pushed_date = datetime.fromisoformat(pushed_at.replace('Z', '+00:00'))
+                    else:
+                        pushed_date = datetime.fromisoformat(pushed_at)
+                    
+                    if pushed_date >= cutoff_date:
+                        active.append(repo)
+                except Exception as e:
+                    print(f"Error parsing date {pushed_at}: {e}")
+                    continue
+        
+        return sorted(active, key=lambda x: x.get('pushed_at', ''), reverse=True)
     
     def _analyze_repository_patterns(self, repos: list) -> Dict[str, Any]:
         """Analyze repository patterns to infer user's skills and interests"""

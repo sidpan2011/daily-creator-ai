@@ -100,50 +100,147 @@ Return as JSON:
 }}
 """
 
-CONTENT_GENERATION_PROMPT = """
-You are a premium editorial writer creating a top-5 updates newsletter.
+BEHAVIORAL_ANALYSIS_PROMPT = """
+You are analyzing a developer's GitHub behavior to extract actionable insights.
+
+GITHUB DATA:
+Recent Repos: {recent_repos}
+Starred Repos: {starred_repos}
+Languages: {languages}
+Recent Commits: {recent_commits}
+Topics: {topics}
 
 USER PROFILE:
-Name: {name}
-Skills: {inferred_skills}
-Interests: {inferred_interests}
-Goals: {inferred_goals}
-Experience: {experience_level} level
-Domain: {primary_domain}
+Interests: {user_interests}
+Location: {location}
+Skills: {skills}
 
-TOP 5 UPDATES DATA:
-{updates_data}
-
-Write a premium newsletter with:
-1. Compelling headline
-2. Brief intro (2-3 sentences)
-3. 5 numbered updates, each with:
-   - Clear title
-   - Detailed, actionable content
-   - Specific references to real data
-   - Why this matters to them specifically
-
-REQUIREMENTS:
-- Each update: 150-200 words
-- Total newsletter: 1000-1200 words
-- Professional, insightful tone
-- Specific, actionable insights
-- Real data references
-- Personal relevance
+TASK: Analyze their GitHub activity to determine:
+1. What technologies they're actively using (from repos and commits)
+2. What technologies they're exploring (from starred repos)
+3. Their primary intent: LEARNING, BUILDING, or EXPLORING
 
 Return as JSON:
 {{
-    "headline": "Compelling headline",
-    "intro": "Brief introduction",
-    "updates": [
-        {{
-            "number": 1,
-            "title": "Update title",
-            "content": "Detailed content with specific insights"
-        }},
-        // ... 4 more updates
-    ],
-    "key_insights": ["main takeaways"],
-    "data_sources": ["specific sources referenced"]
+    "evidence": {{
+        "technologies_using": ["tech1", "tech2", "tech3"],
+        "technologies_exploring": ["tech4", "tech5"],
+        "active_repos": ["repo1", "repo2"],
+        "recent_stars": ["star1", "star2"]
+    }},
+    "primary_intent": "LEARNING|BUILDING|EXPLORING",
+    "confidence": "high|medium|low"
 }}
 """
+
+CONTENT_GENERATION_PROMPT = """
+You're a tech curator sending a friend 5 cool things that happened this week in tech.
+
+**CRITICAL TODAY'S DATE: September 30, 2025** - Only include content from the last 7-14 days (September 16-30, 2025)
+
+USER CONTEXT (for filtering only):
+- Tech stack: {tech_stack}
+- Interests: {user_interests}
+- Skill level: {skill_level}
+- Location: {location}
+
+AVAILABLE CONTENT (fresh sources - ALL HAVE URLS):
+- GitHub trending: {github_trending}
+- HackerNews: {hackernews}
+- Tech news: {news_articles}
+- Events: {opportunities}
+- User starred repos: {starred_repos}
+
+YOUR MISSION:
+Find 5 interesting tech things from THIS WEEK (Sept 16-30, 2025) that match their interests. Think: "What would excite someone who likes {user_interests}?"
+
+CONTENT MIX:
+- 2 items: New tools/APIs in their tech stack
+- 2 items: Industry news/startups in their domain
+- 1 item: Something unexpected but interesting
+- **LOCATION REQUIREMENT:** If location contains "India", include at least 1 India-specific item IF available in sources
+
+RULES:
+✅ DO:
+- Focus on what's NEW (last 7-14 days ONLY - September 16-30, 2025)
+- Use their tech stack to judge relevance, not dictate topics
+- Write naturally: "Anthropic dropped Claude 4.5 yesterday"
+- **CRITICAL: Include the ACTUAL URL from source data as a markdown link in the content**
+- **CRITICAL: Use the EXACT source name from the data (e.g., 'TechCrunch', 'The Verge', 'Google News', not just 'news')**
+- Add specific dates/numbers from source data
+- Make each item from DIFFERENT sources (don't use GitHub 5 times)
+- Only state facts you can verify from source data
+- If unsure about a detail (like model hierarchy), DON'T include it
+
+❌ DON'T:
+- Mention their repo names ("your daily-creator-ai repo...")
+- Say "based on your GitHub activity"
+- Use vague phrases: "could be useful", "great opportunity"
+- Fabricate URLs or events not in source data
+- Make claims about product positioning without verification (e.g., "sits between X and Y models")
+- Include content older than September 16, 2025
+- Recommend financial trading/gambling tools
+- Repeat content from previous runs
+
+WRITING STYLE:
+Casual, specific, helpful. Like texting: "New Python library dropped for async - handles retries automatically. [Check it out](https://github.com/lib/async)"
+
+Not like: "Given your extensive work in Python development, this new library could significantly enhance your asynchronous processing capabilities..."
+
+**HIGHLIGHTING RULES:**
+Use **bold markdown** to highlight important information:
+- **Company/Brand names**: **OpenAI**, **Google**, **Microsoft**, **Anthropic**
+- **Financial figures**: **$13B**, **$500K investment**, **40% faster**
+- **Key metrics**: **15,000 stars**, **200K users**, **3x performance**
+- **Important dates**: **October 15th**, **Q4 2025**
+- **Product names**: **Claude 4.5**, **GPT-4**, **React 19**
+- **Key technologies**: **TypeScript**, **Python**, **Kubernetes**
+
+Example: "**Anthropic** just released **Claude 4.5** with **40% faster** reasoning. The model costs **$0.03/call** and handles **200K tokens** per request."
+
+LENGTH: 120-180 words per item (don't force it)
+
+**URL FORMAT CRITICAL:**
+Every item MUST end with a markdown link from the source data like:
+- "[View on GitHub](https://github.com/repo/name)" for GitHub items
+- "[Read discussion](https://news.ycombinator.com/item?id=12345)" for HackerNews items
+- "[Read article](https://techcrunch.com/...)" for news items
+
+OUTPUT FORMAT:
+{{
+    "items": [
+        {{
+            "title": "Clear, specific title",
+            "content": "What happened + Why it matters + **[Clickable Link](https://real-url-from-source-data.com)**",
+            "url": "https://real-url-from-source-data.com",
+            "source": "EXACT source name from data (e.g., 'TechCrunch', 'The Verge', 'Google News', 'GitHub Trending', 'HackerNews', 'OpenAI Blog', 'Anthropic Blog', etc.)"
+        }}
+    ]
+}}
+
+**VERIFY BEFORE INCLUDING:**
+- URL exists in source data
+- Date is within Sept 16-30, 2025
+- Facts are stated accurately (don't guess model hierarchies, positioning, etc)
+- If location is India, tried to find at least 1 India item
+
+Generate 5 diverse items from different sources.
+"""
+
+LOCATION_RULES = {
+    'India': {
+        'timezone': 'Asia/Kolkata',
+        'content_preferences': ['India-specific tech news', 'Local startup ecosystem', 'Regional developer events'],
+        'minimum_india_content': 0  # Optional, not required
+    },
+    'US': {
+        'timezone': 'America/New_York',
+        'content_preferences': ['US tech news', 'Silicon Valley updates', 'US developer events'],
+        'minimum_us_content': 0
+    },
+    'default': {
+        'timezone': 'UTC',
+        'content_preferences': ['Global tech news', 'International events'],
+        'minimum_local_content': 0
+    }
+}

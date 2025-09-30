@@ -1,16 +1,19 @@
 """
 Email Sender - Premium Editorial Email Delivery
 """
-from jinja2 import Template
+from jinja2 import Template, Environment, FileSystemLoader
 from datetime import datetime
 from typing import Dict, Any
 from .image_fetcher import ImageFetcher
+from .content_formatter import ContentFormatter
+import re
 
 class PremiumEmailSender:
     def __init__(self, config, mcp_orchestrator):
         self.config = config
         self.mcp_orchestrator = mcp_orchestrator
         self.image_fetcher = ImageFetcher()
+        self.content_formatter = ContentFormatter()
     
     async def send_daily_5_newsletter(self, user_data: dict, daily_5_content: Dict[str, Any]):
         """Send Daily 5 newsletter with behavioral intelligence"""
@@ -61,40 +64,77 @@ class PremiumEmailSender:
         return success
     
     def _create_premium_subject_line(self, user_data: dict, editorial_content: Dict[str, str]) -> str:
-        """Create premium, engaging subject lines"""
+        """Create personalized subject lines based on intent and location"""
         
         current_date = datetime.now()
-        date_formats = [
-            current_date.strftime("%B %d"),  # "October 15"
-            current_date.strftime("%b %d"),   # "Oct 15"
-        ]
+        date = current_date.strftime("%A, %B %d, %Y")
+        location = user_data.get('location', '').split(',')[0]  # Get city
         
-        subject_templates = [
-            f"Your update: {date_formats[0]}",
-            f"Persnally: {date_formats[0]}",
-            f"Today's insights: {date_formats[0]}",
-            f"Your briefing: {date_formats[0]}",
-            f"Persnally curated: {date_formats[0]}",
-        ]
+        # Intent-based subject lines
+        intent_subjects = {
+            'building': f"Daily update by persnally: {date}",
+            'exploring': f"Daily update by persnally: {date}",
+            'learning': f"Daily update by persnally: {date}",
+            'launching': f"Daily update by persnally: {date}"
+        }
         
-        # Select based on user preferences or rotate
-        selected_subject = subject_templates[0]  # Use first for consistency
+        # Add location hint if there's local content
+        primary_intent = editorial_content.get('user_intent', {}).get('primary_intent', 'exploring')
+        subject = intent_subjects.get(primary_intent, f"Daily update by persnally: {date}")
         
-        return selected_subject
+        # Add location hint if there's local content
+        if location and user_data.get('preferences', {}).get('prioritize_local'):
+            subject = f"{location} " + subject
+        
+        return subject
     
     def _generate_daily_5_email_html(self, user_data: dict, daily_5_content: Dict[str, Any]) -> str:
-        """Generate Daily 5 HTML email"""
-        
+        """Generate Daily 5 HTML email with visual formatting"""
+
         with open('templates/email.html', 'r') as f:
             template_content = f.read()
-        
-        template = Template(template_content)
-        
+
+        # Format items with visual highlighting
+        formatted_items = []
+
+        # Defensive: Get user_intent safely
+        user_intent = daily_5_content.get('user_intent', {})
+        if isinstance(user_intent, dict):
+            active_repos = user_intent.get('evidence', {}).get('active_repos', [])
+        else:
+            # user_intent is not a dict (might be a string), use empty list
+            active_repos = []
+
+        for item in daily_5_content.get('items', []):
+            formatted_item = item.copy()
+
+            # Apply visual formatting to content
+            content = item.get('content', '')
+            formatted_content = self.content_formatter.format_content(content, active_repos)
+
+            # Add source attribution if available
+            source = item.get('source', '')
+            source_url = item.get('source_url', '')
+            if source:
+                formatted_content = self.content_formatter.add_source_attribution(
+                    formatted_content,
+                    source,
+                    source_url
+                )
+
+            formatted_item['content'] = formatted_content
+            formatted_items.append(formatted_item)
+
+        # Create Jinja2 environment with custom markdown filter
+        env = Environment()
+        env.filters['markdown_to_html'] = self._markdown_to_html
+        template = env.from_string(template_content)
+
         return template.render(
             user_name=user_data['name'],
             headline=daily_5_content['headline'],
             personalization_note=daily_5_content.get('personalization_note', ''),
-            items=daily_5_content.get('items', []),
+            items=formatted_items,  # Use formatted items
             key_insights=daily_5_content.get('key_insights', []),
             date=daily_5_content['date']
         )
@@ -116,6 +156,63 @@ class PremiumEmailSender:
             key_insights=editorial_content.get('key_insights', []),
             date=editorial_content['date']
         )
+    
+    def _markdown_to_html(self, markdown_text: str) -> str:
+        """Convert markdown to HTML for email rendering"""
+        if not markdown_text:
+            return ""
+        
+        # Convert markdown to HTML
+        html = markdown_text
+        
+        # Convert markdown links [text](url) to HTML <a href="url">text</a>
+        # This must be done FIRST before other conversions to preserve URLs
+        html = re.sub(r'\[([^\]]+)\]\(([^\)]+)\)', r'<a href="\2" style="color: #2563eb; text-decoration: none; font-weight: normal;">\1</a>', html)
+        
+        # Convert **bold** to <strong> with simple styling
+        html = re.sub(r'\*\*(.*?)\*\*', r'<strong>\1</strong>', html)
+        
+        # Convert *italic* to <em>
+        html = re.sub(r'\*(.*?)\*', r'<em>\1</em>', html)
+        
+        # Convert line breaks to <br> and paragraphs
+        html = html.replace('\n\n', '</p><p>')
+        html = html.replace('\n', '<br>')
+        
+        # Wrap in paragraph tags if not already wrapped
+        if not html.startswith('<p>'):
+            html = f'<p>{html}</p>'
+        
+        # Convert bullet points (- item) to <ul><li>
+        lines = html.split('<br>')
+        converted_lines = []
+        in_list = False
+        
+        for line in lines:
+            line = line.strip()
+            if line.startswith('- '):
+                if not in_list:
+                    converted_lines.append('<ul>')
+                    in_list = True
+                converted_lines.append(f'<li>{line[2:]}</li>')
+            else:
+                if in_list:
+                    converted_lines.append('</ul>')
+                    in_list = False
+                converted_lines.append(line)
+        
+        if in_list:
+            converted_lines.append('</ul>')
+        
+        html = '<br>'.join(converted_lines)
+        
+        # Convert numbered lists (1. item) to <ol><li>
+        html = re.sub(r'^\d+\. (.+)$', r'<li>\1</li>', html, flags=re.MULTILINE)
+        if '<li>' in html and '<ul>' not in html:
+            html = html.replace('<li>', '<ol><li>', 1)
+            html = html.replace('</li>', '</li></ol>', 1)
+        
+        return html
     
     def _format_content_for_email(self, content: str) -> str:
         """Format content for email HTML"""

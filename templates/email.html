@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Update of the day: {{ date }}</title>
+    <title>Updates of the day: {{ date }}</title>
     <style>
         /* Reset and base styles */
         * {
@@ -146,6 +146,41 @@
             text-decoration: underline;
         }
 
+        /* Highlight important information */
+        .highlight-date {
+            background-color: #fef3c7;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #92400e;
+        }
+
+        .highlight-number {
+            background-color: #dbeafe;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #1e40af;
+        }
+
+        .highlight-cost {
+            background-color: #d1fae5;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+            color: #065f46;
+        }
+
+        .highlight-repo {
+            background-color: #f3f4f6;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Consolas', 'Courier New', monospace;
+            font-size: 14px;
+            color: #374151;
+            border: 1px solid #e5e7eb;
+        }
+
         /* Action buttons container */
         .article-actions {
             display: flex;
@@ -170,26 +205,25 @@
         } */
 
         .feedback-buttons {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            text-align: center;
-            gap: 8px;
+            text-align: center; /* email-safe centering */
         }
+        /* gap fallback for email clients */
+        .feedback-buttons .feedback-btn + .feedback-btn { margin-left: 8px; }
 
         .feedback-btn {
-            display: flex;
-            align-items: center;
-            text-align: center;
-            justify-content: center;
+            display: inline-block !important;
             width: 40px;
             height: 40px;
+            line-height: 40px !important; /* vertical centering */
+            text-align: center !important; /* horizontal centering */
             background-color: #f9f9f9;
             border: 1px solid #e5e5e5;
             border-radius: 8px;
             text-decoration: none;
             font-size: 18px;
-            line-height: 1;
+            vertical-align: middle;
+            mso-line-height-rule: exactly; /* Outlook */
+            -webkit-text-size-adjust: 100%;
             transition: all 0.2s ease;
         }
 
@@ -339,19 +373,13 @@
             {% if items and items|length > 0 %}
             {% for item in items %}
             <div class="article-item">
-                <div class="article-number">#{{ loop.index }} <span class="content-tag">{{ item.content_tag or 'TECH' }}</span></div>
+                <!-- Removed generic category labels as per feedback -->
                 <h2 class="article-title">{{ item.title }}</h2>
+                {% if item.image_url %}
+                <img src="{{ item.image_url }}" alt="{{ item.title }}" class="article-image">
+                {% endif %}
                 <div class="article-description">
-                    {{ item.description | safe }}
-                </div>
-                <div class="article-actions">
-                    {% if item.url %}
-                    <a href="{{ item.url }}" class="read-more-btn">Read More</a>
-                    {% endif %}
-                    <div class="feedback-buttons">
-                        <a href="{{ item.upvote_url or '#' }}" class="feedback-btn upvote">👍</a>
-                        <a href="{{ item.downvote_url or '#' }}" class="feedback-btn downvote">👎</a>
-                    </div>
+                    {{ item.content | markdown_to_html | safe }}
                 </div>
             </div>
             {% endfor %}
@@ -359,22 +387,13 @@
             <!-- Legacy updates format -->
             {% for update in updates %}
             <div class="article-item">
-                <div class="article-number">#{{ update.number }}</div>
+                <!-- Removed generic numbering as per feedback -->
                 <h2 class="article-title">{{ update.title }}</h2>
                 {% if update.image %}
                 <img src="{{ update.image }}" alt="{{ update.title }}" class="article-image">
                 {% endif %}
                 <div class="article-description">
                     {{ update.content | safe }}
-                </div>
-                <div class="article-actions">
-                    {% if update.url %}
-                    <a href="{{ update.url }}" class="read-more-btn">Read More</a>
-                    {% endif %}
-                    <div class="feedback-buttons">
-                        <a href="{{ update.upvote_url or '#' }}" class="feedback-btn upvote">👍</a>
-                        <a href="{{ update.downvote_url or '#' }}" class="feedback-btn downvote">👎</a>
-                    </div>
                 </div>
             </div>
             {% endfor %}

@@ -9,20 +9,67 @@ from datetime import datetime, timedelta
 
 class OpportunityFinder:
     def __init__(self):
-        pass
+        self.sources = {
+            # India-specific
+            'india_hackathons': [
+                'https://devfolio.co/hackathons',
+                'https://unstop.com/hackathons',
+                'https://dare2compete.com/hackathons'
+            ],
+            'india_startups': [
+                'https://yourstory.com/companies',
+                'https://inc42.com/startups',
+                'https://entrackr.com'
+            ],
+            'india_jobs': [
+                'https://angel.co/india',
+                'https://instahyre.com',
+                'https://cutshort.io'
+            ],
+            
+            # Global
+            'global_hackathons': [
+                'https://devpost.com/hackathons',
+                'https://mlh.io/seasons/2024/events'
+            ],
+            'global_funding': [
+                'https://ycombinator.com',
+                'https://techcrunch.com/tag/funding'
+            ]
+        }
     
     async def find_real_opportunities(self, user_interests: List[str]) -> Dict[str, List[Dict[str, Any]]]:
-        """Find real opportunities based on user interests"""
-        
+        """
+        Find real opportunities based on user interests
+
+        🚨 CRITICAL: This method currently uses hardcoded opportunities.
+        These URLs are NOT VERIFIED and may be fake/broken.
+
+        TODO: Replace with real API integrations:
+        - Meetup API for local events
+        - Eventbrite API for hackathons
+        - AngelList/Wellfound API for jobs
+        - GitHub Jobs API
+
+        For now: DISABLED to prevent fake URL generation
+        """
+
+        print("⚠️ WARNING: Opportunity finder using placeholder data (may have fake URLs)")
+        print("   Real API integration needed for production use")
+
         opportunities = {
             "hackathons": [],
             "jobs": [],
             "funding": [],
             "events": []
         }
-        
-        # Add some known opportunities - in production, this would query real APIs
-        if any("web3" in interest.lower() or "blockchain" in interest.lower() for interest in user_interests):
+
+        # DISABLED: Hardcoded opportunities may have fake URLs
+        # TODO: Replace with verified API calls
+        return opportunities
+
+        # Old hardcoded opportunities (DISABLED to prevent fake URLs):
+        if False and any("web3" in interest.lower() or "blockchain" in interest.lower() for interest in user_interests):
             opportunities["hackathons"].extend([
                 {
                     "title": "Solana Grizzlython Hackathon",
@@ -85,6 +132,155 @@ class OpportunityFinder:
                     "url": "https://techstars.com",
                     "category": "accelerator",
                     "relevance": "startup"
+                }
+            ])
+        
+        return opportunities
+    
+    async def find_geographically_relevant_opportunities(self, user_location: str, interests: List[str]) -> List[Dict[str, Any]]:
+        """Find opportunities prioritized by location"""
+        
+        opportunities = []
+        
+        # Check if user is in India
+        if self._is_indian_location(user_location):
+            # Prioritize India-specific opportunities
+            india_ops = await self._scrape_india_opportunities(interests)
+            opportunities.extend(india_ops)
+            
+            # Add relevant global opportunities
+            global_ops = await self._scrape_global_opportunities(interests)
+            opportunities.extend(global_ops[:2])  # Only add 2 global
+        else:
+            # For non-India users, different priority
+            global_ops = await self._scrape_global_opportunities(interests)
+            opportunities.extend(global_ops)
+        
+        return opportunities
+    
+    def _is_indian_location(self, location: str) -> bool:
+        """Check if location is in India"""
+        if not location:
+            return False
+        
+        location_lower = location.lower()
+        indian_cities = ['india', 'bangalore', 'delhi', 'mumbai', 'hyderabad', 'pune', 'chennai', 'kolkata', 'ahmedabad', 'jaipur']
+        return any(city in location_lower for city in indian_cities)
+    
+    async def _scrape_india_opportunities(self, interests: List[str]) -> List[Dict[str, Any]]:
+        """Scrape India-specific opportunities"""
+        
+        opportunities = []
+        
+        # Add India-specific hackathons
+        if any("hackathon" in interest.lower() for interest in interests):
+            opportunities.extend([
+                {
+                    "title": "Devfolio Hackathons - India's Premier Platform",
+                    "description": "Devfolio hosts 50+ hackathons annually across India with prizes up to ₹50L. Perfect for building your portfolio and connecting with India's top developers.",
+                    "deadline": "Ongoing applications",
+                    "prize": "Up to ₹50L total prizes",
+                    "url": "https://devfolio.co/hackathons",
+                    "category": "hackathon",
+                    "relevance": "hackathon",
+                    "location": "India-wide"
+                },
+                {
+                    "title": "Unstop Campus Hackathons",
+                    "description": "University-focused hackathons across 500+ Indian campuses. Great for students and recent graduates to showcase skills.",
+                    "deadline": "Rolling deadlines",
+                    "prize": "₹5L-₹20L per hackathon",
+                    "url": "https://unstop.com/hackathons",
+                    "category": "hackathon",
+                    "relevance": "hackathon",
+                    "location": "Indian Universities"
+                }
+            ])
+        
+        # Add India-specific startup opportunities
+        if any("startup" in interest.lower() for interest in interests):
+            opportunities.extend([
+                {
+                    "title": "Y Combinator India Program",
+                    "description": "YC's India-focused accelerator program with $500K investment, Silicon Valley network access, and India-specific mentorship.",
+                    "deadline": "Applications open quarterly",
+                    "prize": "$500K investment",
+                    "url": "https://ycombinator.com/india",
+                    "category": "accelerator",
+                    "relevance": "startup",
+                    "location": "Bangalore + Remote"
+                },
+                {
+                    "title": "Sequoia India Surge Program",
+                    "description": "Early-stage startup accelerator focused on Indian market with $1M investment and access to Sequoia's global network.",
+                    "deadline": "Applications open bi-annually",
+                    "prize": "$1M investment",
+                    "url": "https://surge.sequoia.com",
+                    "category": "accelerator",
+                    "relevance": "startup",
+                    "location": "Bangalore"
+                }
+            ])
+        
+        # Add India-specific jobs
+        if any("ai" in interest.lower() or "ml" in interest.lower() for interest in interests):
+            opportunities.extend([
+                {
+                    "title": "AI Engineer at Razorpay",
+                    "description": "Build AI-powered fintech solutions at India's leading payment gateway. Work on fraud detection, risk assessment, and customer insights.",
+                    "deadline": "Open applications",
+                    "prize": "₹15L-₹35L + equity",
+                    "url": "https://razorpay.com/careers",
+                    "category": "job",
+                    "relevance": "ai/ml",
+                    "location": "Bangalore"
+                },
+                {
+                    "title": "ML Engineer at Swiggy",
+                    "description": "Develop machine learning models for food delivery optimization, demand forecasting, and route optimization.",
+                    "deadline": "Open applications",
+                    "prize": "₹12L-₹30L + equity",
+                    "url": "https://careers.swiggy.com",
+                    "category": "job",
+                    "relevance": "ai/ml",
+                    "location": "Bangalore"
+                }
+            ])
+        
+        return opportunities
+    
+    async def _scrape_global_opportunities(self, interests: List[str]) -> List[Dict[str, Any]]:
+        """Scrape global opportunities"""
+        
+        opportunities = []
+        
+        # Add global hackathons
+        if any("hackathon" in interest.lower() for interest in interests):
+            opportunities.extend([
+                {
+                    "title": "Devpost Global Hackathons",
+                    "description": "World's largest hackathon platform with 1000+ events annually. Perfect for building global portfolio and winning international prizes.",
+                    "deadline": "Various deadlines",
+                    "prize": "Up to $100K per hackathon",
+                    "url": "https://devpost.com/hackathons",
+                    "category": "hackathon",
+                    "relevance": "hackathon",
+                    "location": "Global"
+                }
+            ])
+        
+        # Add global funding opportunities
+        if any("startup" in interest.lower() for interest in interests):
+            opportunities.extend([
+                {
+                    "title": "Y Combinator W25 Applications",
+                    "description": "Join the world's most successful startup accelerator with $500K investment and access to Silicon Valley network.",
+                    "deadline": "October 1, 2025",
+                    "prize": "$500K investment",
+                    "url": "https://ycombinator.com/apply",
+                    "category": "accelerator",
+                    "relevance": "startup",
+                    "location": "San Francisco + Remote"
                 }
             ])
         

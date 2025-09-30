@@ -5,16 +5,24 @@ Fetches relevant images for each news/article item
 import httpx
 import json
 from typing import Optional
+from bs4 import BeautifulSoup
+import re
+from urllib.parse import urljoin, urlparse
 
 class ImageFetcher:
     def __init__(self):
         self.unsplash_access_key = None  # We'll use placeholder images for now
     
-    async def get_relevant_image(self, query: str, category: str) -> Optional[str]:
+    async def get_relevant_image(self, query: str, category: str, article_url: str = None) -> Optional[str]:
         """Get relevant image URL for the given query and category"""
         
-        # For now, use placeholder images with relevant themes
-        # In production, you could integrate with Unsplash API or other image services
+        # First try to scrape image from the actual article
+        if article_url:
+            scraped_image = await self.scrape_article_image(article_url)
+            if scraped_image:
+                return scraped_image
+        
+        # Fallback to curated images based on content
         
         category_images = {
             "🎯": "https://images.unsplash.com/photo-1551288049-bebda4e38f71?w=400&h=200&fit=crop",  # Target/focus
@@ -76,3 +84,122 @@ class ImageFetcher:
             print(f"⚠️ Failed to fetch Unsplash image: {e}")
         
         return None
+    
+    async def scrape_article_image(self, url: str) -> Optional[str]:
+        """Scrape the main image from an article URL"""
+        
+        if not url or url == '#':
+            return None
+        
+        try:
+            async with httpx.AsyncClient(
+                timeout=httpx.Timeout(10.0),
+                headers={
+                    'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+                }
+            ) as client:
+                response = await client.get(url)
+                
+                if response.status_code != 200:
+                    return None
+                
+                soup = BeautifulSoup(response.text, 'html.parser')
+                
+                # Try different methods to find the main article image
+                image_url = None
+                
+                # Method 1: Open Graph image
+                og_image = soup.find('meta', property='og:image')
+                if og_image and og_image.get('content'):
+                    image_url = og_image['content']
+                
+                # Method 2: Twitter Card image
+                if not image_url:
+                    twitter_image = soup.find('meta', attrs={'name': 'twitter:image'})
+                    if twitter_image and twitter_image.get('content'):
+                        image_url = twitter_image['content']
+                
+                # Method 3: First article image
+                if not image_url:
+                    # Look for images in common article containers
+                    article_selectors = [
+                        'article img', 
+                        '.post-content img', 
+                        '.entry-content img',
+                        '.article-content img',
+                        '.content img',
+                        'main img'
+                    ]
+                    
+                    for selector in article_selectors:
+                        img_tags = soup.select(selector)
+                        for img in img_tags:
+                            src = img.get('src') or img.get('data-src')
+                            if src and self._is_valid_image(src):
+                                image_url = src
+                                break
+                        if image_url:
+                            break
+                
+                # Method 4: Any large image on the page
+                if not image_url:
+                    all_imgs = soup.find_all('img')
+                    for img in all_imgs:
+                        src = img.get('src') or img.get('data-src')
+                        if src and self._is_valid_image(src):
+                            # Skip small images (likely icons/logos)
+                            width = img.get('width')
+                            height = img.get('height')
+                            if width and height:
+                                try:
+                                    if int(width) > 200 and int(height) > 100:
+                                        image_url = src
+                                        break
+                                except:
+                                    pass
+                            else:
+                                # No dimensions specified, assume it might be good
+                                image_url = src
+                                break
+                
+                # Convert relative URLs to absolute
+                if image_url:
+                    if image_url.startswith('//'):
+                        image_url = 'https:' + image_url
+                    elif image_url.startswith('/'):
+                        image_url = urljoin(url, image_url)
+                    elif not image_url.startswith('http'):
+                        image_url = urljoin(url, image_url)
+                
+                return image_url
+                
+        except Exception as e:
+            print(f"⚠️ Failed to scrape image from {url}: {e}")
+            return None
+    
+    def _is_valid_image(self, src: str) -> bool:
+        """Check if the image source is valid and not an icon/logo"""
+        
+        if not src:
+            return False
+        
+        # Skip common non-article images
+        skip_patterns = [
+            'logo', 'icon', 'avatar', 'profile', 'badge', 'button',
+            'ad', 'banner', 'footer', 'header', 'nav', 'sidebar',
+            'pixel', 'tracking', 'analytics', 'social'
+        ]
+        
+        src_lower = src.lower()
+        if any(pattern in src_lower for pattern in skip_patterns):
+            return False
+        
+        # Must be a common image format
+        if not any(ext in src_lower for ext in ['.jpg', '.jpeg', '.png', '.webp', '.gif']):
+            return False
+        
+        # Skip very small images (likely icons)
+        if any(size in src_lower for size in ['16x16', '32x32', '64x64', '100x100']):
+            return False
+        
+        return True

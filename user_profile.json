@@ -1,12 +1,18 @@
 {
-  "name": "Sidhanth",
+  "name": "Sidhanth Pandey",
   "email": "sidh.pan98@gmail.com",
   "github_username": "sidpan2011",
+  "location": "USA",
+  "timezone": "Asia/Kolkata",
   "interests": [
     "ai/ml research",
-    "web3 and blockchain",
     "hackathon",
-    "robotics",
-    "future"
-  ]
+    "robotics"    
+  ],
+  "experience_level": "intermediate_to_advanced",
+  "preferences": {
+    "content_style": "technical_with_business_context",
+    "prioritize_local": true,
+    "opportunity_types": ["hackathons", "jobs", "funding"]
+  }
 }

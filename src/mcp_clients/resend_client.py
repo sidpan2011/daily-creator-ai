@@ -22,7 +22,7 @@ class MCPResendClient:
             self.mcp_process = await asyncio.create_subprocess_exec(
                 "node", self.mcp_server_path,
                 "--key", self.config.RESEND_API_KEY,
-                "--sender", "onboarding@resend.dev",
+                "--sender", "Persnally <updates@persnally.com>",
                 stdin=asyncio.subprocess.PIPE,
                 stdout=asyncio.subprocess.PIPE,
                 stderr=asyncio.subprocess.PIPE
@@ -58,12 +58,12 @@ class MCPResendClient:
                     "subject": subject,
                     "text": text_content or self._html_to_text(html_content),
                     "html": html_content,
-                    "from": "onboarding@resend.dev"
+                    "from": "Persnally <updates@persnally.com>"
                 }
             }
         }
         
-        print(f"📤 Sending MCP request: {json.dumps(mcp_request, indent=2)}")
+        # print(f"📤 Sending MCP request: {json.dumps(mcp_request, indent=2)}")
         
         try:
             # Send request to MCP server
@@ -106,7 +106,7 @@ class MCPResendClient:
         }
         
         payload = {
-            "from": "onboarding@resend.dev",
+            "from": "Persnally <updates@persnally.com>",
             "to": [to_email],  # Send to actual user email
             "subject": subject,
             "html": html_content,
