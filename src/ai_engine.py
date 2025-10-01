@@ -13,7 +13,6 @@ from .system_prompts import USER_ANALYSIS_PROMPT, TOP5_UPDATES_PROMPT, CONTENT_G
 from .content_validator import ContentValidator
 from .repo_analyzer import RepoFileAnalyzer
 from .web_opportunity_finder import WebOpportunityFinder
-from .content_cache import ContentCache
 
 class AIEditorialEngine:
     def __init__(self, config):
@@ -23,7 +22,6 @@ class AIEditorialEngine:
         self.content_curator = ContentCurator()
         self.repo_analyzer = RepoFileAnalyzer(config.GITHUB_TOKEN)
         self.web_finder = WebOpportunityFinder()
-        self.content_cache = ContentCache()  # Deduplication system
     
     async def generate_daily_5(self, user_profile: dict, research_data: dict, location_rule: str = None) -> Dict[str, Any]:
         """Generate Daily 5 with fail-loudly approach - better to send no email than garbage"""
@@ -131,10 +129,6 @@ class AIEditorialEngine:
                             return None
 
                 print("✅ All URLs verified - content is trustworthy!")
-
-                # Record sent content in cache to prevent duplicates
-                user_email = user_profile.get('email', user_profile.get('username', 'unknown'))
-                self.content_cache.add_sent_content(user_email, daily_5_content.get('items', []))
 
                 current_date = datetime.now().strftime("%B %d, %Y")
                 subject_line = self.behavior_analyzer.get_intent_based_subject_line(behavioral_data, current_date)

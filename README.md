@@ -1,75 +1,54 @@
-# Persnally - Behavioral Intelligence "Daily 5"
+# Persnally - Personalized Tech Intelligence
 
-A behavioral intelligence system that analyzes your GitHub activity patterns to predict your current intent and delivers 5 perfectly matched opportunities every day.
+> **Hackathon Project**: Built in 48 hours for the Resend MCP Hackathon. Core functionality works - it analyzes GitHub activity, curates fresh tech content, and delivers via email. Some features are still being refined (see Current Status below).
 
-## 🧠 What It Does
+An AI-powered system that analyzes your GitHub activity and stated interests to deliver relevant tech intelligence via email.
 
-**Persnally** uses behavioral analysis to understand your current focus and delivers intelligent "Daily 5" recommendations:
+## What It Does
 
-- **Behavioral Analysis** - Analyzes GitHub activity to predict intent (exploring, building, learning, launching, etc.)
-- **Smart Opportunity Matching** - Finds 5 opportunities perfectly matched to your current situation
-- **Intent-Based Categories** - 🎯 FOR YOU, ⚡ ACT NOW, 🧠 LEVEL UP, 💰 OPPORTUNITY, 🔮 WHAT'S NEXT
-- **Real Data Sources** - GitHub trending repos, HackerNews stories, live research
-- **AI-Powered Intelligence** - Claude-powered behavioral analysis and content generation
-- **Premium Email Delivery** - Via Resend MCP integration
+**Persnally** generates personalized tech briefings by combining your interests with real-time content discovery:
 
-## 🎯 Daily 5 Categories
+- Analyzes your GitHub for technical context (skill level, tech stack)
+- Gathers fresh content from GitHub trending, HackerNews, and news sources
+- Uses Claude Sonnet 4 to match content to your interests
+- Validates quality (real URLs, specific dates, no generic spam)
+- Sends via Resend MCP integration
 
-Each day, you'll receive 5 opportunities in these intelligent categories:
-
-- **🎯 FOR YOU** - Perfectly matched to your current intent and skills
-- **⚡ ACT NOW** - Time-sensitive opportunities (hackathons, jobs, launches)
-- **🧠 LEVEL UP** - Learning resources at your exact skill level
-- **💰 OPPORTUNITY** - Business/career advancement opportunities
-- **🔮 WHAT'S NEXT** - Future trends you should be tracking
-
-## 🧠 Behavioral Intelligence
-
-The system analyzes your GitHub activity to detect:
-
-- **EXPLORING** - Researching new technologies (stars, forks outside main stack)
-- **BUILDING** - Active development (recent commits, new repos)
-- **LEARNING** - Skill development (tutorial repos, courses)
-- **SCALING** - Growing projects (performance, deployment focus)
-- **PIVOTING** - Tech stack changes (experimenting with new languages)
-- **LAUNCHING** - Preparing releases (marketing sites, documentation)
-
-## 🚀 Quick Start
+## Quick Start
 
 ### 1. Set Up Your Profile
 
-Create `user_profile.json` with your real information:
+Create `user_profile.json`:
 
 ```json
 {
-  "name": "Your Real Name",
-  "email": "your-actual-email@gmail.com", 
+  "name": "Your Name",
+  "email": "your-email@example.com",
   "github_username": "your-github-username",
-  "skills": ["Python", "JavaScript", "React", "AI/ML"],
-  "interests": ["AI automation", "developer productivity", "indie hacking"],
-  "goals": ["build profitable SaaS", "master AI development"],
+  "location": "USA",
+  "interests": ["ai/ml tools", "hackathons", "product development"],
   "experience_level": "intermediate_to_advanced",
-  "content_preferences": {
-    "style": "technical_with_business_context",
-    "depth": "deep_analysis", 
-    "motivation": "story_driven_with_data"
+  "preferences": {
+    "content_style": "technical_with_business_context",
+    "prioritize_local": true,
+    "opportunity_types": ["hackathons", "jobs", "events"]
   }
 }
 ```
 
 ### 2. Configure API Keys
 
-Copy `env_template.txt` to `.env` and add your keys:
+Copy `env_template.txt` to `.env`:
 
 ```bash
 cp env_template.txt .env
 ```
 
-Required keys:
+Required:
 - **ANTHROPIC_API_KEY** - Get from [console.anthropic.com](https://console.anthropic.com)
 - **RESEND_API_KEY** - Get from [resend.com](https://resend.com)
 
-Optional but recommended:
+Optional:
 - **GITHUB_TOKEN** - Get from [github.com/settings/tokens](https://github.com/settings/tokens)
 
 ### 3. Install & Run
@@ -78,96 +57,189 @@ Optional but recommended:
 # Install dependencies
 pip install -r requirements.txt
 
-# Generate and send Daily 5 newsletter
-python src/main.py
+# Generate and send newsletter
+python run.py
 
-# Test Daily 5 generation (no email sending)
+# Test without sending
 python test_daily_5.py
-
-# Test content quality improvements
-python test_content_quality.py
 ```
 
-## 📁 Project Structure
+## Current Status
+
+**What Works:**
+- GitHub activity analysis for technical context
+- Multi-source content aggregation (GitHub trending, HackerNews, tech news)
+- AI-powered content generation with Claude Sonnet 4
+- Quality validation (URL verification, date checking, spam prevention)
+- Email delivery via Resend MCP with professional templates
+- Content diversity mechanisms (randomized source selection)
+
+**Active Development:**
+- Geographic content coverage (limited non-US sources currently)
+- User profiling accuracy (balancing stated interests vs GitHub activity)
+- Source reliability (some sources return limited results)
+- Content diversity (randomized source selection per run)
+
+**Known Limitations:**
+- May generate 3-4 items instead of 5 if quality standards aren't met
+- Geographic personalization works best for US content
+- Some web crawling sources (Dev.to, Product Hunt) have limited results
+- Content may repeat if run multiple times on same day (sources update daily)
+
+This is a working proof of concept demonstrating personalized tech intelligence. Quality over quantity - better to send 4 verified items than 5 items with spam.
+
+## How It Works
+
+1. **Profile Analysis**: Reads your interests and analyzes GitHub for technical context
+2. **Content Discovery**: Gathers fresh content (last 7-14 days) from multiple sources
+3. **AI Curation**: Claude Sonnet 4 matches content to your profile
+4. **Quality Validation**: Checks URLs, dates, specificity, and relevance
+5. **Email Delivery**: Sends via Resend MCP with clean HTML template
+
+The system uses your GitHub to understand skill level and tech stack, but recommends based on your stated interests. It's smart filtering, not surveillance.
+
+## Features
+
+### Data Sources
+
+**Currently Working:**
+- GitHub API (trending repos, releases, user activity)
+- HackerNews API (top stories, discussions)
+- Tech news sites (TechCrunch, The Verge, Wired via web scraping)
+- Opportunity aggregation (hackathons, jobs from multiple sources)
+
+**Partial Results:**
+- Dev.to (limited article matches)
+- Reddit (limited discussion matches)
+- Product Hunt (limited product matches)
+
+### Content Validation
+
+- Real URL verification (broken links rejected)
+- Specific date requirements (no vague "recently" or "this month")
+- Spam phrase detection (rejects generic marketing language)
+- Source diversity (each item from different source when possible)
+- Freshness filtering (content from last 7-14 days)
+
+### Email Features
+
+- Clean, scannable HTML template
+- Mobile-responsive design
+- Source attribution
+- Clickable real URLs
+- Custom branding with Bebas Neue font
+
+## Project Structure
 
 ```
 persnally/
 ├── src/
-│   ├── main.py              # Daily 5 main entry point
-│   ├── config.py             # Real configuration
-│   ├── models.py             # Clean data models
-│   ├── mcp_orchestrator.py   # Real MCP integration
-│   ├── ai_engine.py          # Behavioral intelligence engine
-│   ├── behavior_analyzer.py  # User intent analysis
-│   ├── opportunity_matcher.py # Smart opportunity matching
-│   └── email_sender.py       # Daily 5 email sending
-├── data_sources/             # Real data source integrations
-│   ├── github_api.py         # Real GitHub API client
-│   ├── hackernews_api.py     # Real HackerNews API client
-│   └── web_research.py       # Real web research aggregator
-├── mcp_clients/              # Keep only Resend MCP (required)
-│   ├── base_client.py        # Clean base class
-│   └── resend_client.py      # Real Resend MCP integration
+│   ├── ai_engine.py           # Content generation orchestrator
+│   ├── behavior_analyzer.py   # GitHub activity analysis
+│   ├── content_curator.py     # Content generation & curation
+│   ├── content_validator.py   # Quality validation
+│   ├── email_sender.py        # Email generation & sending
+│   └── config.py              # Configuration management
+├── data_sources/
+│   ├── github_api.py          # GitHub API client
+│   ├── hackernews_api.py      # HackerNews API client
+│   ├── opportunity_finder.py  # Hackathons + jobs aggregator
+│   ├── realtime_web_crawler.py # Multi-source web crawler
+│   └── web_research.py        # Research data aggregator
+├── mcp_server/resend/         # Resend MCP integration
 ├── templates/
-│   └── email.html            # Daily 5 email template
-├── user_profile.json         # Real user profile
-├── test_daily_5.py           # Daily 5 test script
-└── requirements.txt          # Clean dependencies
+│   └── email.html             # Email template
+├── user_profile.json          # User configuration
+└── run.py                     # Main entry point
 ```
 
-## 🎯 What You Get
+## Technical Stack
 
-### Behavioral Intelligence:
-✅ **Intent Detection** - Analyzes GitHub activity to predict current focus  
-✅ **Smart Categorization** - 5 opportunities in perfect categories  
-✅ **Personalized Timing** - Content matched to your availability patterns  
-✅ **Growth Tracking** - Understands your skill development journey  
+- **AI Model**: Claude Sonnet 4 (Anthropic API)
+- **Email Delivery**: Resend MCP Server
+- **GitHub Integration**: GitHub REST API
+- **Web Scraping**: BeautifulSoup4 + httpx
+- **Async Processing**: Concurrent data fetching
 
-### Daily 5 Opportunities:
-✅ **🎯 FOR YOU** - Perfectly matched to your current intent  
-✅ **⚡ ACT NOW** - Time-sensitive opportunities with deadlines  
-✅ **🧠 LEVEL UP** - Learning resources at your exact skill level  
-✅ **💰 OPPORTUNITY** - Career/business advancement opportunities  
-✅ **🔮 WHAT'S NEXT** - Future trends you should be tracking  
+## Configuration
 
-### Real Data Integration:
-✅ **Your actual GitHub profile** analyzed for behavioral patterns  
-✅ **Live trending repositories** from GitHub API  
-✅ **Real HackerNews stories** from live API  
-✅ **Comprehensive research** combining multiple sources  
+### User Profile Options
 
-### Clean Production Code:
-✅ **Behavioral analysis engine** - Sophisticated intent detection  
-✅ **Smart opportunity matching** - AI-powered relevance scoring  
-✅ **Daily 5 email format** - Clean, scannable layout  
-✅ **Production ready** - proper error handling and logging
+```json
+{
+  "interests": ["topic1", "topic2"],  // Your actual interests (most important)
+  "experience_level": "beginner|intermediate|intermediate_to_advanced|expert",
+  "preferences": {
+    "content_style": "technical|technical_with_business_context|business_focused",
+    "prioritize_local": true,  // Prefer local content when available
+    "opportunity_types": ["hackathons", "jobs", "funding", "events"]
+  }
+}
+```
 
-### Quality Improvements:
-✅ **Real data only** - No made-up project names or fake metrics  
-✅ **Useful content** - Genuine opportunities with actionable next steps  
-✅ **Clean design** - Simple, readable email template without clutter  
-✅ **Honest recommendations** - Like recommending to a smart friend  
+### Environment Variables
 
-## 🔧 Technical Details
+```bash
+# Required
+ANTHROPIC_API_KEY=your_anthropic_api_key
+RESEND_API_KEY=your_resend_api_key
 
-- **AI Engine**: GPT-4o for premium content generation
-- **Data Sources**: Real GitHub API, HackerNews API, web research
-- **MCP Integration**: Resend for email delivery
-- **Architecture**: Clean separation of concerns, async processing
-- **Error Handling**: Comprehensive error handling and fallbacks
+# Optional (prevents GitHub rate limiting)
+GITHUB_TOKEN=your_github_token
+```
 
-## 🏆 Why This Wins
+## Testing
 
-### Demo Impact:
-- **"This actually works with real data!"** 
-- **Personalized content about YOUR actual GitHub activity**
-- **References real trending repos and stories**
-- **Professional quality output you'd want to read**
+```bash
+# Full system test (generates + sends email)
+python run.py
 
-### Technical Credibility:
-- **Real API integrations** showing technical competence
-- **Clean architecture** demonstrating engineering skills  
-- **MCP integration** (Resend) meeting requirements
-- **Production-ready code** beyond hackathon quality
+# Test generation only (no email)
+python test_daily_5.py
+```
 
-This transformation makes Persnally feel like a **real product** that generates **genuinely valuable content** using **real data sources**. Perfect for winning the hackathon! 🚀
+## Troubleshooting
+
+**No relevant content found:**
+- Make your interests more specific in `user_profile.json`
+- Check that data sources are accessible (GitHub, HackerNews)
+- Review console logs for API errors
+
+**Email not received:**
+- Verify RESEND_API_KEY is valid
+- Check email address in user_profile.json
+- Review Resend dashboard for delivery status
+
+**Low geographic relevance:**
+- US content is most abundant in current sources
+- Geographic personalization being expanded
+
+## Development Roadmap
+
+**Immediate (Post-Hackathon):**
+- Expand non-US content sources (India, Europe, Asia)
+- Refine user profiling (better interest matching)
+- Add content tracking to prevent repetition
+
+**Future:**
+- User feedback loops (thumbs up/down on items)
+- Frequency controls (daily, weekly, activity-triggered)
+- More data sources (newsletter APIs, conference listings)
+- Analytics dashboard (engagement tracking)
+
+## Built For
+
+Resend MCP Hackathon - October 2025
+
+**Key Technologies:**
+- Anthropic Claude API for AI-powered curation
+- Resend MCP for email delivery
+- Multiple real-time data sources (GitHub, HackerNews, news APIs)
+
+## License
+
+MIT License
+
+---
+
+**Note**: This is a proof of concept demonstrating personalized tech intelligence. The core system works and sends quality content, but some features are still being refined based on real-world usage. Feedback welcome!
