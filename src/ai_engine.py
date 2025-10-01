@@ -402,11 +402,39 @@ class AIEditorialEngine:
             else:
                 hn_stories = []
             
-            opps = research_data.get('opportunities', [])
-            if isinstance(opps, list):
-                opps = list(opps)[:8]  # Reduced from 15 to 8
+            # Get opportunities (dict with hackathons, jobs, funding, events)
+            opps = research_data.get('opportunities', {})
+            print(f"🔍 DEBUG: opportunities type = {type(opps)}")
+            print(f"🔍 DEBUG: opportunities keys = {opps.keys() if isinstance(opps, dict) else 'Not a dict'}")
+
+            if isinstance(opps, dict):
+                # Extract hackathons and jobs (the ones we actually fetch)
+                hackathons = opps.get('hackathons', [])[:5]  # Top 5 hackathons
+                jobs = opps.get('jobs', [])[:3]  # Top 3 jobs
+
+                # Combine for prompt
+                opps_data = {
+                    'hackathons': hackathons,
+                    'jobs': jobs
+                }
+
+                print(f"🎯 Passing {len(hackathons)} hackathons and {len(jobs)} jobs to AI")
+
+                # Show first hackathon for debugging
+                if hackathons:
+                    first_hack = hackathons[0]
+                    print(f"   Example hackathon: {first_hack.get('title', 'No title')}")
+                    print(f"   URL: {first_hack.get('url', 'No URL')}")
+                else:
+                    print("   ⚠️ WARNING: No hackathons in opportunities data!")
+
+            elif isinstance(opps, list):
+                # Fallback: if it's somehow a list, use it directly
+                print(f"⚠️ WARNING: opportunities is a list (unexpected), using as-is")
+                opps_data = opps[:8]
             else:
-                opps = []
+                print(f"❌ ERROR: opportunities is neither dict nor list: {type(opps)}")
+                opps_data = {'hackathons': [], 'jobs': []}
 
             # Determine skill level from GitHub activity
             skill_level = "intermediate"  # Default
@@ -423,7 +451,7 @@ class AIEditorialEngine:
                 github_trending=json.dumps(trending_repos, indent=2),
                 hackernews=json.dumps(hn_stories, indent=2),
                 news_articles=web_search_summary,  # RENAMED from web_search_results
-                opportunities=json.dumps(opps, indent=2),
+                opportunities=json.dumps(opps_data, indent=2),  # Now contains hackathons and jobs
                 starred_repos=json.dumps([])  # RENAMED from user_starred_repos
             )
         except Exception as e:

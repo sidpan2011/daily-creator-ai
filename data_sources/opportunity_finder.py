@@ -6,56 +6,23 @@ import httpx
 import asyncio
 from typing import List, Dict, Any
 from datetime import datetime, timedelta
+from bs4 import BeautifulSoup
+from .devpost_api import DevpostClient
 
 class OpportunityFinder:
     def __init__(self):
-        self.sources = {
-            # India-specific
-            'india_hackathons': [
-                'https://devfolio.co/hackathons',
-                'https://unstop.com/hackathons',
-                'https://dare2compete.com/hackathons'
-            ],
-            'india_startups': [
-                'https://yourstory.com/companies',
-                'https://inc42.com/startups',
-                'https://entrackr.com'
-            ],
-            'india_jobs': [
-                'https://angel.co/india',
-                'https://instahyre.com',
-                'https://cutshort.io'
-            ],
-            
-            # Global
-            'global_hackathons': [
-                'https://devpost.com/hackathons',
-                'https://mlh.io/seasons/2024/events'
-            ],
-            'global_funding': [
-                'https://ycombinator.com',
-                'https://techcrunch.com/tag/funding'
-            ]
+        self.devpost = DevpostClient()
+        self.headers = {
+            'User-Agent': 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36',
         }
-    
+
     async def find_real_opportunities(self, user_interests: List[str]) -> Dict[str, List[Dict[str, Any]]]:
         """
-        Find real opportunities based on user interests
-
-        🚨 CRITICAL: This method currently uses hardcoded opportunities.
-        These URLs are NOT VERIFIED and may be fake/broken.
-
-        TODO: Replace with real API integrations:
-        - Meetup API for local events
-        - Eventbrite API for hackathons
-        - AngelList/Wellfound API for jobs
-        - GitHub Jobs API
-
-        For now: DISABLED to prevent fake URL generation
+        Find real opportunities based on user interests.
+        Now with REAL API integrations!
         """
 
-        print("⚠️ WARNING: Opportunity finder using placeholder data (may have fake URLs)")
-        print("   Real API integration needed for production use")
+        print("🔍 Finding real opportunities...")
 
         opportunities = {
             "hackathons": [],
@@ -64,11 +31,171 @@ class OpportunityFinder:
             "events": []
         }
 
-        # DISABLED: Hardcoded opportunities may have fake URLs
-        # TODO: Replace with verified API calls
+        # Fetch hackathons from Devpost (REAL API)
+        try:
+            devpost_hackathons = await self.devpost.get_hackathons_by_interests(user_interests, limit=10)
+            opportunities["hackathons"].extend(devpost_hackathons)
+            print(f"  ✅ Found {len(devpost_hackathons)} hackathons from Devpost")
+        except Exception as e:
+            print(f"  ⚠️ Devpost fetch failed: {e}")
+
+        # Fetch jobs from Y Combinator (scraping)
+        try:
+            yc_jobs = await self._fetch_yc_jobs(user_interests, limit=5)
+            opportunities["jobs"].extend(yc_jobs)
+            print(f"  ✅ Found {len(yc_jobs)} jobs from YC")
+        except Exception as e:
+            print(f"  ⚠️ YC jobs fetch failed: {e}")
+
+        # Fetch funding news from TechCrunch (already scraped in web_crawler)
+        # We'll mark this as available but defer to web_crawler
+
+        total = len(opportunities["hackathons"]) + len(opportunities["jobs"])
+        print(f"✅ Total opportunities found: {total}")
+
         return opportunities
 
-        # Old hardcoded opportunities (DISABLED to prevent fake URLs):
+    async def _fetch_yc_jobs(self, user_interests: List[str], limit: int = 5) -> List[Dict[str, Any]]:
+        """
+        Scrape Y Combinator jobs page for startup jobs.
+        """
+        print("  💼 Fetching jobs from Y Combinator...")
+
+        jobs = []
+
+        try:
+            async with httpx.AsyncClient(timeout=30.0, headers=self.headers, follow_redirects=True) as client:
+                url = "https://www.ycombinator.com/jobs"
+                response = await client.get(url)
+
+                if response.status_code != 200:
+                    print(f"    ⚠️ YC returned {response.status_code}")
+                    return []
+
+                soup = BeautifulSoup(response.text, 'html.parser')
+
+                # Find job listings
+                # YC uses various class names, let's try common patterns
+                job_cards = soup.find_all('div', class_='job')
+                if not job_cards:
+                    job_cards = soup.find_all('a', class_='job-link')
+                if not job_cards:
+                    # Fallback: find all links containing /companies/
+                    job_cards = soup.find_all('a', href=lambda x: x and '/companies/' in x)
+
+                print(f"    Found {len(job_cards)} job listings")
+
+                for card in job_cards[:limit * 3]:  # Get extra to filter
+                    try:
+                        job = self._parse_yc_job_card(card)
+                        if job:
+                            # Filter by relevance to interests - use smart keyword matching
+                            job_text = (job.get('title', '') + ' ' + job.get('description', '')).lower()
+                            relevance = self._calculate_job_relevance(job_text, user_interests)
+
+                            if relevance > 0:
+                                job['relevance_score'] = relevance
+                                jobs.append(job)
+
+                            if len(jobs) >= limit:
+                                break
+                    except Exception as e:
+                        continue
+
+                print(f"    ✅ Found {len(jobs)} relevant jobs")
+                return jobs
+
+        except Exception as e:
+            print(f"    ❌ YC jobs fetch failed: {e}")
+            return []
+
+    def _calculate_job_relevance(self, job_text: str, user_interests: List[str]) -> int:
+        """Calculate job relevance using flexible keyword matching"""
+
+        # Map user interests to related keywords
+        interest_keywords = {
+            'ai': ['ai', 'artificial intelligence', 'machine learning', 'ml', 'deep learning', 'neural', 'llm', 'gpt', 'nlp', 'computer vision'],
+            'ml': ['machine learning', 'ml', 'ai', 'deep learning', 'data science', 'neural', 'tensorflow', 'pytorch'],
+            'tools': ['developer tools', 'devtools', 'sdk', 'api', 'platform', 'infrastructure'],
+            'hackathon': ['developer', 'engineer', 'software', 'technical', 'coding'],
+            'product': ['product', 'development', 'engineering', 'software', 'technical', 'build'],
+            'development': ['development', 'engineering', 'software', 'developer', 'engineer', 'technical'],
+            'web3': ['blockchain', 'crypto', 'web3', 'defi', 'ethereum', 'solana'],
+            'blockchain': ['blockchain', 'crypto', 'web3', 'defi', 'ethereum', 'smart contract'],
+            'startup': ['startup', 'early stage', 'founder', 'growth', 'scale'],
+            'backend': ['backend', 'api', 'server', 'database', 'infrastructure'],
+            'frontend': ['frontend', 'react', 'vue', 'angular', 'ui', 'web'],
+            'mobile': ['mobile', 'ios', 'android', 'react native', 'flutter']
+        }
+
+        relevance_score = 0
+
+        for interest in user_interests:
+            interest_lower = interest.lower()
+
+            # Direct match (e.g., "product development" in job text)
+            if interest_lower in job_text:
+                relevance_score += 3
+                continue
+
+            # Split compound interests (e.g., "ai/ml tools" → ["ai", "ml", "tools"])
+            interest_words = interest_lower.replace('/', ' ').split()
+
+            for word in interest_words:
+                # Skip common words
+                if word in ['and', 'or', 'the', 'a', 'an']:
+                    continue
+
+                # Direct word match
+                if word in job_text:
+                    relevance_score += 2
+
+                # Check related keywords
+                if word in interest_keywords:
+                    for keyword in interest_keywords[word]:
+                        if keyword in job_text:
+                            relevance_score += 1
+                            break  # Only count once per word
+
+        return relevance_score
+
+    def _parse_yc_job_card(self, card) -> Dict[str, Any]:
+        """Parse a job card from YC jobs page"""
+
+        # Extract title
+        title_elem = card.find('h3') or card.find('span', class_='job-title') or card
+        title = title_elem.get_text(strip=True) if title_elem else "Job Opening"
+
+        # Extract URL
+        url = card.get('href') if card.name == 'a' else None
+        if url and not url.startswith('http'):
+            url = f"https://www.ycombinator.com{url}"
+
+        # Extract company
+        company_elem = card.find('span', class_='company') or card.find('div', class_='company-name')
+        company = company_elem.get_text(strip=True) if company_elem else "YC Company"
+
+        # Extract location
+        location_elem = card.find('span', class_='location')
+        location = location_elem.get_text(strip=True) if location_elem else "Remote / SF"
+
+        # Extract description
+        desc_elem = card.find('p', class_='description') or card.find('div', class_='job-description')
+        description = desc_elem.get_text(strip=True)[:200] if desc_elem else f"Job at {company}"
+
+        return {
+            'title': title,
+            'url': url,
+            'company': company,
+            'location': location,
+            'description': description,
+            'source': 'Y Combinator',
+            'category': 'job',
+            'published_at': datetime.now().isoformat()
+        }
+
+    # Old hardcoded opportunities (DISABLED):
+    async def _disabled_hardcoded_opportunities(self):
         if False and any("web3" in interest.lower() or "blockchain" in interest.lower() for interest in user_interests):
             opportunities["hackathons"].extend([
                 {

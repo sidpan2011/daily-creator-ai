@@ -2,7 +2,7 @@
 Content Writer - Well-structured, descriptive content generation
 Creates educational, engaging content that helps users understand the full context
 """
-import openai
+import anthropic
 import json
 from typing import Dict, Any, List
 from datetime import datetime
@@ -12,7 +12,7 @@ from .image_fetcher import ImageFetcher
 class ContentWriter:
     def __init__(self):
         config = get_config()
-        self.client = openai.OpenAI(api_key=config.OPENAI_API_KEY)
+        self.client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
         self.image_fetcher = ImageFetcher()
     
     async def create_comprehensive_content(self, raw_items: List[Dict], user_profile: dict) -> List[Dict[str, Any]]:
@@ -144,17 +144,17 @@ class ContentWriter:
         """
         
         try:
-            response = self.client.chat.completions.create(
-                model="gpt-4o",
+            response = self.client.messages.create(
+                model="claude-sonnet-4-20250514",
                 max_tokens=800,
                 temperature=0.2,
+                system="You are a tech insider sharing specific intel. Write concise, fact-heavy content. NO fluff. ALWAYS return valid JSON.",
                 messages=[
-                    {"role": "system", "content": "You are a tech insider sharing specific intel. Write concise, fact-heavy content. NO fluff. ALWAYS return valid JSON."},
                     {"role": "user", "content": prompt}
                 ]
             )
-            
-            response_text = response.choices[0].message.content.strip()
+
+            response_text = response.content[0].text.strip()
             
             # Try to extract JSON from the response
             if response_text.startswith('```json'):

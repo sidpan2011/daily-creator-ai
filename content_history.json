@@ -642,6 +642,348 @@
         "sent_date": "2025-10-01T01:54:24.589706",
         "title": "Simple WhatsApp API Goes Viral",
         "url": "https://github.com/Codegres-com/Simple-Whatsapp-API"
+      },
+      {
+        "hash": "1d8a3d8549e6df50e6535f1a07d974c3",
+        "sent_date": "2025-10-01T12:09:08.592436",
+        "title": "Anthropic Releases Claude Sonnet 4.5 with Major Performance Boost",
+        "url": "https://www.anthropic.com/news/claude-sonnet-4-5"
+      },
+      {
+        "hash": "d6ca8273b480c7397757ebcfb2470ed8",
+        "sent_date": "2025-10-01T12:09:08.592436",
+        "title": "Former OpenAI and DeepMind Researchers Raise $300M to Automate Science",
+        "url": "https://techcrunch.com/2025/09/30/former-openai-and-deepmind-researchers-raise-whopping-300m-seed-to-automate-science/"
+      },
+      {
+        "hash": "7e1114caa36ea98b1c55f9a0c9bda59e",
+        "sent_date": "2025-10-01T12:09:08.592436",
+        "title": "Google Releases CDC File Transfer Tool for Large-Scale Data Movement",
+        "url": "https://github.com/google/cdc-file-transfer"
+      },
+      {
+        "hash": "a885966b63ecb3b8adf730cc5f0ded42",
+        "sent_date": "2025-10-01T12:09:08.592436",
+        "title": "New Jersey Theme Park Sells Animatronic Dinosaurs on Facebook Marketplace",
+        "url": "https://gizmodo.com/new-jersey-theme-park-puts-animatronic-dinosaurs-on-facebook-marketplace-as-it-shuts-down-2000664489"
+      },
+      {
+        "hash": "0ee82da886973b7faaf1a89d468285b6",
+        "sent_date": "2025-10-01T12:52:18.640677",
+        "title": "Former OpenAI and DeepMind Researchers Raise $300M to Automate Scientific Research",
+        "url": "https://techcrunch.com/2025/09/30/former-openai-and-deepmind-researchers-raise-whopping-300m-seed-to-automate-science/"
+      },
+      {
+        "hash": "b7342382a25386869223045c6f4ce502",
+        "sent_date": "2025-10-01T12:52:18.640677",
+        "title": "Advanced Python OSINT Tool Goes Viral on GitHub",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "ede55b8f9d9573f31163fb1a2bab8e2e",
+        "sent_date": "2025-10-01T12:52:18.640677",
+        "title": "PayPal's Honey Integrates with ChatGPT for AI Shopping",
+        "url": "https://techcrunch.com/2025/09/30/paypals-honey-to-integrate-with-chatgpt-and-other-ais-for-shopping-assistance/"
+      },
+      {
+        "hash": "2ec43ac8d03ad57b4f9e47551e0f3e49",
+        "sent_date": "2025-10-01T12:52:18.640677",
+        "title": "Toyota Invests $1.5B in Robotics and AI Startups",
+        "url": "https://techcrunch.com/2025/09/30/toyota-adds-another-1-5b-to-its-bet-on-startups-at-every-stage/"
+      },
+      {
+        "hash": "655bc9f249e5875e9c7c2e266a128a97",
+        "sent_date": "2025-10-01T13:01:03.250002",
+        "title": "GitHub's Spec-Driven Development with AI",
+        "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-using-markdown-as-a-programming-language-when-building-with-ai/"
+      },
+      {
+        "hash": "c4a2de0f9bcb5a2b58b9050eefe5c401",
+        "sent_date": "2025-10-01T13:01:03.250002",
+        "title": "Google's CDC File Transfer Tool Goes Open Source",
+        "url": "https://github.com/google/cdc-file-transfer"
+      },
+      {
+        "hash": "7b463cea970ac9cf1514f44e4922eba3",
+        "sent_date": "2025-10-01T13:01:03.250002",
+        "title": "Advanced Python OSINT Tool Trending",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "7a91ef7cf32b62c5b00c02eeccf5d822",
+        "sent_date": "2025-10-01T13:01:03.250002",
+        "title": "PayPal's Honey Integrates with ChatGPT for Shopping AI",
+        "url": "https://techcrunch.com/2025/09/30/paypals-honey-to-integrate-with-chatgpt-and-other-ais-for-shopping-assistance/"
+      },
+      {
+        "hash": "94d9f39b70bdf3b3faab9c87d1297895",
+        "sent_date": "2025-10-01T13:19:48.841744",
+        "title": "PayPal Honey Integrates with ChatGPT for Shopping AI",
+        "url": "https://techcrunch.com/2025/09/30/paypals-honey-to-integrate-with-chatgpt-and-other-ais-for-shopping-assistance/"
+      },
+      {
+        "hash": "c4a2de0f9bcb5a2b58b9050eefe5c401",
+        "sent_date": "2025-10-01T13:19:48.841744",
+        "title": "Google's CDC File Transfer Tool Goes Open Source",
+        "url": "https://github.com/google/cdc-file-transfer"
+      },
+      {
+        "hash": "a5382469ebc9506ebc0ce01af05892d8",
+        "sent_date": "2025-10-01T13:19:48.841744",
+        "title": "Advanced OSINT Tool with 262 Stars in One Day",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "c8351428f74e725737ddae904c4f9e0e",
+        "sent_date": "2025-10-01T13:19:48.841744",
+        "title": "Claude Code Extension for VS Code in Beta",
+        "url": "https://docs.claude.com/en/docs/claude-code/vs-code"
+      },
+      {
+        "hash": "22a2b0d47523b4cd808ef5a3de5b035f",
+        "sent_date": "2025-10-01T13:41:27.702856",
+        "title": "OpenAI Launches Sora 2 Video Generation Model with TikTok-Style App",
+        "url": "https://techcrunch.com/2025/09/30/openai-is-launching-the-sora-app-its-own-tiktok-competitor-alongside-the-sora-2-model"
+      },
+      {
+        "hash": "b8a726a94744dc6f1af3484ac821acee",
+        "sent_date": "2025-10-01T13:41:27.702856",
+        "title": "Former OpenAI & DeepMind Researchers Raise $300M to Automate Scientific Discovery",
+        "url": "https://techcrunch.com/2025/09/30/former-openai-and-deepmind-researchers-raise-whopping-300m-seed-to-automate-science"
+      },
+      {
+        "hash": "49d7f20a376cc26b043259cd3fb3815a",
+        "sent_date": "2025-10-01T13:41:27.702856",
+        "title": "PayPal's Honey Integrates with ChatGPT for AI Shopping Assistant",
+        "url": "https://techcrunch.com/2025/09/30/paypals-honey-to-integrate-with-chatgpt-and-other-ais-for-shopping-assistance"
+      },
+      {
+        "hash": "c4a2de0f9bcb5a2b58b9050eefe5c401",
+        "sent_date": "2025-10-01T13:41:27.702856",
+        "title": "Google's CDC File Transfer Tool Goes Open Source",
+        "url": "https://github.com/google/cdc-file-transfer"
+      },
+      {
+        "hash": "8961765833416df439fcb99bdb06afc4",
+        "sent_date": "2025-10-01T13:41:27.702856",
+        "title": "New JavaScript Environment Guard Tool Gains Traction",
+        "url": "https://github.com/bingcicle/env_guard"
+      },
+      {
+        "hash": "e9ad9a7e05c27de3aa39477b0076a3a4",
+        "sent_date": "2025-10-01T13:51:35.209439",
+        "title": "PayPal's Honey Integrates with ChatGPT for AI Shopping Assistant",
+        "url": "https://techcrunch.com/2025/09/30/paypals-honey-to-integrate-with-chatgpt-and-other-ais-for-shopping-assistance/"
+      },
+      {
+        "hash": "c4a2de0f9bcb5a2b58b9050eefe5c401",
+        "sent_date": "2025-10-01T13:51:35.209439",
+        "title": "Google's CDC File Transfer Tool Goes Open Source",
+        "url": "https://github.com/google/cdc-file-transfer"
+      },
+      {
+        "hash": "906685179ed7b60fa739fc2074e66507",
+        "sent_date": "2025-10-01T13:51:35.209439",
+        "title": "Spyder OSINT Tool Trending on GitHub",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "82da674a37bc50d6abefdbf20feb5afc",
+        "sent_date": "2025-10-01T13:51:35.209439",
+        "title": "Databricks Shares Kubernetes Load Balancing Insights",
+        "url": "https://www.databricks.com/blog/intelligent-kubernetes-load-balancing-databricks"
+      },
+      {
+        "hash": "9adf9e44c608aa71e1c2f1ddaf3cf8d3",
+        "sent_date": "2025-10-01T14:41:39.549496",
+        "title": "GitHub's AI-Powered Spec-Driven Development Goes Live",
+        "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-using-markdown-as-a-programming-language-when-building-with-ai/"
+      },
+      {
+        "hash": "faed24571635ea8ea614e2cd2829d149",
+        "sent_date": "2025-10-01T14:41:39.549496",
+        "title": "Wikipedia Data Gets AI-Ready with New Accessibility Project",
+        "url": "https://techcrunch.com/2025/10/01/new-project-makes-wikipedia-data-more-accessible-to-ai/"
+      },
+      {
+        "hash": "7e23d0ec4fb447b40c89617575d30d09",
+        "sent_date": "2025-10-01T14:41:39.549496",
+        "title": "Google's CDC File Transfer Tool Hits GitHub Trending",
+        "url": "https://github.com/google/cdc-file-transfer"
+      },
+      {
+        "hash": "053e66ff1ee631b18747680f9747a966",
+        "sent_date": "2025-10-01T14:41:39.549496",
+        "title": "Advanced OSINT Tool 'Spyder' Gains 309 Stars in 24 Hours",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "2a51434feb8468259716548cbdbfcc52",
+        "sent_date": "2025-10-01T14:51:13.519045",
+        "title": "Spyder-OSINT - Advanced Multi-Functional Intelligence Tool",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "786f1b096bdf51bbc94f73c3d52d50a7",
+        "sent_date": "2025-10-01T14:51:13.519045",
+        "title": "Google's CDC File Transfer - Efficient Large File Sync",
+        "url": "https://github.com/google/cdc-file-transfer"
+      },
+      {
+        "hash": "21d8be8e22b65973b50895bd467c9cfd",
+        "sent_date": "2025-10-01T14:51:13.519045",
+        "title": "WiFi-Based Image Generation Research Breakthrough",
+        "url": "https://arxiv.org/abs/2506.10605"
+      },
+      {
+        "hash": "e2915a7918d16088ac4571de2f767287",
+        "sent_date": "2025-10-01T14:51:13.519045",
+        "title": "Databricks Shares Intelligent Kubernetes Load Balancing Insights",
+        "url": "https://www.databricks.com/blog/intelligent-kubernetes-load-balancing-databricks"
+      },
+      {
+        "hash": "1247d5f6692549927b0d29614418bc5e",
+        "sent_date": "2025-10-01T14:58:48.973689",
+        "title": "GitHub's AI-Powered Spec-Driven Development Approach",
+        "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-using-markdown-as-a-programming-language-when-building-with-ai/"
+      },
+      {
+        "hash": "d5bb25b78847ae3b7c419558dddc427a",
+        "sent_date": "2025-10-01T14:58:48.973689",
+        "title": "New Wikipedia AI Database Project Launches",
+        "url": "https://techcrunch.com/2025/10/01/new-project-makes-wikipedia-data-more-accessible-to-ai/"
+      },
+      {
+        "hash": "b12a84604d7f4ed1ad389e0ceaa93e9f",
+        "sent_date": "2025-10-01T14:58:48.973689",
+        "title": "Advanced Python OSINT Tool Goes Viral",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "ce8a5d55aa3201a2dcef8a03222a8233",
+        "sent_date": "2025-10-01T14:58:48.973689",
+        "title": "Google Releases CDC File Transfer Tool",
+        "url": "https://github.com/google/cdc-file-transfer"
+      },
+      {
+        "hash": "9ecd3d17a407b041028445a32c7b91b2",
+        "sent_date": "2025-10-01T19:43:09.847592",
+        "title": "GitHub Copilot Now Compiles Markdown Specs Into Production Code",
+        "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-using-markdown-as-a-programming-language-when-building-with-ai/"
+      },
+      {
+        "hash": "b31d3183f3dc13737ddd4e85986b2c8b",
+        "sent_date": "2025-10-01T19:43:09.847592",
+        "title": "New AI Slide Generator Supports 65 Languages with Live Feedback",
+        "url": "https://oina.ai/"
+      },
+      {
+        "hash": "05965947944704262b34296518cb36e1",
+        "sent_date": "2025-10-01T19:43:09.847592",
+        "title": "Advanced OSINT Tool Gains 365 Stars in 48 Hours",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "f2cb6aee598d9c496a6d524df6745572",
+        "sent_date": "2025-10-01T19:43:09.847592",
+        "title": "TigerBeetle Database Architecture Sparks 178-Point HackerNews Discussion",
+        "url": "https://www.amplifypartners.com/blog-posts/why-tigerbeetle-is-the-most-interesting-database-in-the-world"
+      },
+      {
+        "hash": "50efe051a0ab85c100c748908aef6414",
+        "sent_date": "2025-10-01T19:43:09.847592",
+        "title": "WhatsApp API Tool Simplifies Instant Messaging Integration",
+        "url": "https://github.com/Codegres-com/Simple-Whatsapp-API"
+      },
+      {
+        "hash": "76e4e50dd56b6fb8700dc4d5c445fe79",
+        "sent_date": "2025-10-01T20:21:34.436877",
+        "title": "ChartDB Agent - AI-Powered Database Schema Designer",
+        "url": "https://app.chartdb.io/ai"
+      },
+      {
+        "hash": "a31dd838476acd8735d56dc50427f03a",
+        "sent_date": "2025-10-01T20:21:34.436877",
+        "title": "Shortcut's Korey - AI Orchestration for Product Teams",
+        "url": "https://siliconangle.com/2025/09/30/shortcut-debuts-korey-bringing-ai-orchestration-product-management/"
+      },
+      {
+        "hash": "a48802b2a8cfa15cac669e30ad345811",
+        "sent_date": "2025-10-01T20:21:34.436877",
+        "title": "Spyder OSINT - Advanced Multi-Functional Investigation Tool",
+        "url": "https://github.com/gumot0/spyder-osint"
+      },
+      {
+        "hash": "f2a9ff0dea768c6c453e3823a0717b15",
+        "sent_date": "2025-10-01T20:21:34.436877",
+        "title": "Cursor 1.7 - Major AI Code Editor Update",
+        "url": "https://cursor.com/changelog/1-7"
+      },
+      {
+        "hash": "44b3ad97452de3151fcef7e1f6b6b24c",
+        "sent_date": "2025-10-01T20:21:34.436877",
+        "title": "Meta's AI Chat Data for Targeted Advertising",
+        "url": "https://techcrunch.com/2025/10/01/meta-plans-to-sell-targeted-ads-based-on-data-in-your-ai-chats/"
+      },
+      {
+        "hash": "af93c97bcd7d1f321062c0a534ff6cce",
+        "sent_date": "2025-10-01T20:33:19.731018",
+        "title": "DeepSeek V3.2 Experimental Model Drops on GitHub",
+        "url": "https://github.com/deepseek-ai/DeepSeek-V3.2-Exp"
+      },
+      {
+        "hash": "0c0a6d0365f4e82b89c58e49b94af794",
+        "sent_date": "2025-10-01T20:33:19.731018",
+        "title": "GitHub's Markdown-as-Code Development Revolution",
+        "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-using-markdown-as-a-programming-language-when-building-with-ai/"
+      },
+      {
+        "hash": "f08bc81ce0772732ca4e3cce0091de63",
+        "sent_date": "2025-10-01T20:33:19.731018",
+        "title": "ChartDB Agent: Cursor-Style AI for Database Design",
+        "url": "https://app.chartdb.io/ai"
+      },
+      {
+        "hash": "a4a26273b433a889f1a9eed901136ebf",
+        "sent_date": "2025-10-01T20:33:19.731018",
+        "title": "Deta's Surf: AI Browser Meets NotebookLM",
+        "url": "https://techcrunch.com/2025/10/01/detas-surf-app-is-an-amalgamation-of-an-ai-browser-and-notebooklm/"
+      },
+      {
+        "hash": "4e9c49fd4d09b0471305a833357d1a0e",
+        "sent_date": "2025-10-01T20:33:19.731018",
+        "title": "Simple WhatsApp API for Product Integration",
+        "url": "https://github.com/Codegres-com/Simple-Whatsapp-API"
+      },
+      {
+        "hash": "c74ce7ea0e6b2ad271f549245fd311df",
+        "sent_date": "2025-10-01T20:56:49.779777",
+        "title": "DeepSeek V3.2 Experimental Model Just Dropped",
+        "url": "https://github.com/deepseek-ai/DeepSeek-V3.2-Exp"
+      },
+      {
+        "hash": "5acc06642451ef4863eb0ed7a7ebf9f5",
+        "sent_date": "2025-10-01T20:56:49.779777",
+        "title": "OpenAI & Stripe Launch Agentic Commerce Protocol",
+        "url": "https://github.com/agentic-commerce-protocol/agentic-commerce-protocol"
+      },
+      {
+        "hash": "faa33c75d018e13a7cdbb92c54141080",
+        "sent_date": "2025-10-01T20:56:49.779777",
+        "title": "Google's $10K Baseline Tooling Hackathon - 5 Days Left",
+        "url": "https://baseline.devpost.com/"
+      },
+      {
+        "hash": "643420938797af22d274e11257791846",
+        "sent_date": "2025-10-01T20:56:49.779777",
+        "title": "GitHub Copilot + Markdown = New Development Paradigm",
+        "url": "https://github.blog/ai-and-ml/generative-ai/spec-driven-development-using-markdown-as-a-programming-language-when-building-with-ai/"
+      },
+      {
+        "hash": "8ea6f1df64af7d675f8790995bbcec47",
+        "sent_date": "2025-10-01T20:56:49.779777",
+        "title": "ChartDB Agent: Cursor for Database Design",
+        "url": "https://app.chartdb.io/ai"
       }
     ]
   }

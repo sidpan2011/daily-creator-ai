@@ -2,78 +2,131 @@
 Smart Opportunity Matcher
 Matches user intent with 5 most relevant opportunities from research data
 """
-import openai
+import anthropic
 import json
 from typing import Dict, Any, List
 from datetime import datetime
 
 class OpportunityMatcher:
     def __init__(self, config):
-        self.client = openai.OpenAI(api_key=config.OPENAI_API_KEY)
+        self.client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
     
     async def find_daily_5(self, user_intent: dict, research_data: dict) -> List[Dict[str, Any]]:
         """Match user intent with 5 most relevant opportunities"""
         
+        # Extract user profile data - THIS IS PRIMARY
+        user_interests = user_intent.get('interests', [])
+        user_experience = user_intent.get('experience_level', 'intermediate')
+        user_preferences = user_intent.get('preferences', {})
+        opportunity_types = user_preferences.get('opportunity_types', [])
+
+        # Extract GitHub context - THIS IS SECONDARY (for technical understanding)
+        github_context = research_data.get('user_context', {})
+
         prompt = f"""
-        You are creating a personalized Daily 5 for a developer with these specific interests:
-        USER PROFILE: {json.dumps(user_intent, indent=2)}
-        
+        You are creating a personalized Daily 5 for a developer. PRIORITIZE THEIR STATED INTERESTS ABOVE ALL.
+
+        ═══════════════════════════════════════════════════════════════════
+        PRIMARY FACTORS (Weight: 70%) - USER PROFILE:
+        ═══════════════════════════════════════════════════════════════════
+
+        USER INTERESTS (MOST IMPORTANT): {json.dumps(user_interests, indent=2)}
+        EXPERIENCE LEVEL: {user_experience}
+        PREFERRED OPPORTUNITY TYPES: {json.dumps(opportunity_types, indent=2)}
+        CONTENT STYLE: {user_preferences.get('content_style', 'technical_with_business_context')}
+        LOCATION: {user_intent.get('location', 'Global')}
+
+        ⚠️ CRITICAL: Match recommendations to user_interests FIRST.
+        Every recommendation MUST relate to at least one interest.
+
+        ═══════════════════════════════════════════════════════════════════
+        SECONDARY FACTORS (Weight: 30%) - GITHUB CONTEXT (for technical depth):
+        ═══════════════════════════════════════════════════════════════════
+
+        Recent Activity: {json.dumps(github_context.get('recent_repos', [])[:5], indent=2)}
+        Tech Stack: {json.dumps(github_context.get('repo_analysis', {}).get('top_languages', [])[:3], indent=2)}
+
+        Note: GitHub is CONTEXT ONLY - to understand their technical level and current work.
+        DO NOT prioritize GitHub repos over user's stated interests.
+
+        ═══════════════════════════════════════════════════════════════════
+        DATA SOURCES:
+        ═══════════════════════════════════════════════════════════════════
+
         REAL GITHUB TRENDING: {json.dumps(research_data.get('trending_repos', [])[:15], indent=2)}
         REAL HACKERNEWS: {json.dumps(research_data.get('hackernews_stories', [])[:15], indent=2)}
-        USER'S GITHUB ACTIVITY: {json.dumps(research_data.get('user_context', {}), indent=2)}
-        
-        Create 5 HIGHLY SPECIFIC opportunities that match their interests:
-        
-        MATCHING RULES:
-        - If user likes "web3/blockchain" → find blockchain repos, DeFi projects, crypto hackathons
-        - If user likes "ai/ml" → find AI repos, ML papers, AI hackathons, new models
-        - If user likes "hackathon" → find ACTUAL hackathons with dates/prizes
-        - If user likes "startup" → find funding news, YC companies, startup tools
-        
+
+        ═══════════════════════════════════════════════════════════════════
+        MATCHING RULES (In Priority Order):
+        ═══════════════════════════════════════════════════════════════════
+
+        1. MATCH USER INTERESTS FIRST:
+           - If user lists "ai/ml research" → prioritize ML research papers, AI tools, research opportunities
+           - If user lists "hackathon" → prioritize ACTUAL hackathons with dates/prizes
+           - If user lists "robotics" → prioritize robotics projects, competitions, hardware
+           - If user lists "web3/blockchain" → blockchain repos, DeFi, crypto opportunities
+           - If user lists "startup" → funding news, YC companies, startup tools
+
+        2. MATCH OPPORTUNITY TYPES:
+           - If preferences include "hackathons" → look for competitions
+           - If preferences include "jobs" → look for job postings
+           - If preferences include "funding" → look for grants, accelerators
+
+        3. CONSIDER GITHUB (Secondary):
+           - Use GitHub to gauge technical depth and current context
+           - NOT as primary matching factor
+
+        4. EXPERIENCE LEVEL:
+           - Match complexity to their experience level
+           - {user_experience} → adjust technical depth accordingly
+
         Categories:
-        🎯 FOR YOU - Perfect match to their interests (web3 + AI + startup)
-        ⚡ ACT NOW - Real hackathons, job applications, funding deadlines
-        🧠 LEVEL UP - Advanced tutorials in their interest areas  
-        💰 OPPORTUNITY - Real jobs, grants, accelerators in their field
-        🔮 WHAT'S NEXT - Emerging trends in web3/AI/startup space
-        
+        🎯 FOR YOU - Perfect match to their stated interests
+        ⚡ ACT NOW - Real deadlines, time-sensitive opportunities
+        🧠 LEVEL UP - Learning resources in their interest areas
+        💰 OPPORTUNITY - Jobs, grants, accelerators matching preferences
+        🔮 WHAT'S NEXT - Emerging trends in their interest areas
+
         For each item:
         1. Use REAL data from above sources
-        2. Explain specific relevance to their interests
-        3. Include actionable next steps with URLs
+        2. Explain SPECIFIC relevance to their STATED interests (not just GitHub)
+        3. Include actionable next steps with real URLs
         4. Add relevant metrics (stars, funding amounts, dates)
-        5. Make it feel personally curated
-        
-        Example for web3 interest:
-        "Solana Foundation just announced a $50M hackathon focused on AI + DeFi. Given your background in both AI/ML and blockchain (evident from your PyTorch stars and Solana repos), this could be perfect. Applications close Oct 15."
-        
+        5. Make it feel personally curated for THEIR interests
+
+        Example for "ai/ml research" + "robotics" interests:
+        "DeepMind released new robotics simulation framework (12K GitHub stars). Given your interests in AI/ML research AND robotics, this is highly relevant. The framework supports reinforcement learning for robot manipulation. Check out the examples at github.com/deepmind/robotics-sim"
+
         Return JSON array:
         [
             {{
                 "category": "🎯 FOR YOU",
                 "title": "Specific title from real data",
-                "description": "Why this specifically matters to this user's interests and background",
+                "description": "Why this specifically matters to their STATED interests",
                 "action": "Exact next step with URL",
                 "relevance_score": 9,
                 "source": "GitHub/HackerNews",
                 "meta_info": "Real metrics/dates",
-                "image_query": "search term for relevant image"
+                "image_query": "search term for relevant image",
+                "interest_match": "ai/ml research, robotics"
             }}
         ]
+
+        ⚠️ REMINDER: Every item must clearly connect to at least ONE of the user's stated interests: {user_interests}
         """
         
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
+        response = self.client.messages.create(
+            model="claude-sonnet-4-20250514",
             max_tokens=2500,
             temperature=0.3,
+            system="You are a personalized opportunity curator. Always return valid JSON array with exactly 5 items.",
             messages=[
-                {"role": "system", "content": "You are a personalized opportunity curator. Always return valid JSON array with exactly 5 items."},
                 {"role": "user", "content": prompt}
             ]
         )
-        
+
         try:
-            daily_5_data = json.loads(response.choices[0].message.content)
+            daily_5_data = json.loads(response.content[0].text)
             return daily_5_data
         except Exception as e:
             print(f"⚠️ Daily 5 matching failed: {e}")
@@ -207,15 +260,15 @@ class OpportunityMatcher:
         Return JSON with updated relevance scores and ranking.
         """
         
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
+        response = self.client.messages.create(
+            model="claude-sonnet-4-20250514",
             max_tokens=1000,
             temperature=0.3,
             messages=[{"role": "user", "content": prompt}]
         )
-        
+
         try:
-            ranked_data = json.loads(response.choices[0].message.content)
+            ranked_data = json.loads(response.content[0].text)
             return ranked_data
         except:
             # Simple fallback ranking
@@ -246,11 +299,11 @@ class OpportunityMatcher:
         Explain in 2-3 sentences why these specific opportunities match their current focus and goals.
         """
         
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
+        response = self.client.messages.create(
+            model="claude-sonnet-4-20250514",
             max_tokens=200,
             temperature=0.6,
             messages=[{"role": "user", "content": prompt}]
         )
-        
-        return response.choices[0].message.content.strip()
+
+        return response.content[0].text.strip()

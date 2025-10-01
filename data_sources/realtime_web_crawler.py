@@ -44,33 +44,36 @@ class RealTimeWebCrawler:
         print("🌐 Crawling VERIFIED, reliable tech news sources...")
         
         all_articles = []
-        
+
         # ENHANCED: Diverse source selection based on user interests and randomization
-        all_possible_sources = [
-            self._crawl_google_news_tech(),  # NEW: Google News Tech section
-            self._crawl_techcrunch(),        # Tier 1: Established tech journalism
-            self._crawl_the_verge(),         # NEW: The Verge - tech culture & news
-            self._crawl_wired(),             # NEW: Wired - tech & science
-            self._crawl_github_blog(),       # Tier 1: Official platform updates
-            self._crawl_hacker_news_new(),   # Tier 1: Curated community
-            self._crawl_openai_blog(),       # Tier 1: Official AI updates
-            self._crawl_anthropic_blog(),    # Tier 1: Official AI research
-            self._crawl_ethereum_blog(),     # Tier 1: Official blockchain updates
-            self._crawl_dev_to_fresh(),      # Fresh developer content
-            self._crawl_ycombinator_news(),  # Startup news
-            self._crawl_reddit_programming(), # Community discussions
-            self._crawl_product_hunt(),      # New product launches
+        # Store methods (not coroutines yet) to avoid unawaited coroutine warnings
+        all_possible_source_methods = [
+            self._crawl_google_news_tech,  # NEW: Google News Tech section
+            self._crawl_techcrunch,        # Tier 1: Established tech journalism
+            self._crawl_the_verge,         # NEW: The Verge - tech culture & news
+            self._crawl_wired,             # NEW: Wired - tech & science
+            self._crawl_github_blog,       # Tier 1: Official platform updates
+            self._crawl_hacker_news_new,   # Tier 1: Curated community
+            self._crawl_openai_blog,       # Tier 1: Official AI updates
+            self._crawl_anthropic_blog,    # Tier 1: Official AI research
+            self._crawl_ethereum_blog,     # Tier 1: Official blockchain updates
+            self._crawl_dev_to_fresh,      # Fresh developer content
+            self._crawl_ycombinator_news,  # Startup news
+            self._crawl_reddit_programming, # Community discussions
+            self._crawl_product_hunt,      # New product launches
         ]
-        
+
         # Randomize source order to get different content each time
-        random.shuffle(all_possible_sources)
-        
+        random.shuffle(all_possible_source_methods)
+
         # Select sources based on user interests + randomization
-        selected_sources = self._select_diverse_sources(all_possible_sources, user_interests)
-        
-        # Ensure all selected sources are coroutines
+        selected_source_methods = self._select_diverse_sources(all_possible_source_methods, user_interests)
+
+        # NOW create coroutines from selected methods only
+        selected_sources = [method() for method in selected_source_methods]
+
         print(f"🔍 Selected {len(selected_sources)} sources for crawling")
-        
+
         results = await asyncio.gather(*selected_sources, return_exceptions=True)
 
         print("\n📊 Web Crawling Results Summary:")

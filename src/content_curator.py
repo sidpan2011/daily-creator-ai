@@ -7,7 +7,7 @@ import httpx
 import asyncio
 from typing import List, Dict, Any
 from datetime import datetime, timedelta
-import openai
+import anthropic
 from .config import get_config
 from .content_writer import ContentWriter
 from .fresh_content_generator import FreshContentGenerator
@@ -21,7 +21,7 @@ from data_sources.realtime_web_crawler import RealTimeWebCrawler
 class ContentCurator:
     def __init__(self):
         config = get_config()
-        self.client = openai.OpenAI(api_key=config.OPENAI_API_KEY)
+        self.client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
         self.content_writer = ContentWriter()
         self.fresh_generator = FreshContentGenerator()
         self.user_analyzer = SmartUserAnalyzer()
@@ -153,18 +153,18 @@ class ContentCurator:
         """
         
         # Generate ideas
-        ideas_response = self.client.chat.completions.create(
-            model="gpt-4o",
+        ideas_response = self.client.messages.create(
+            model="claude-sonnet-4-20250514",
             max_tokens=2000,
             temperature=0.3,
+            system="You are a tech intelligence curator. Generate specific, actionable content ideas using real data. Always return valid JSON.",
             messages=[
-                {"role": "system", "content": "You are a tech intelligence curator. Generate specific, actionable content ideas using real data. Always return valid JSON."},
                 {"role": "user", "content": ideas_prompt}
             ]
         )
-        
+
         try:
-            ideas_content = ideas_response.choices[0].message.content.strip()
+            ideas_content = ideas_response.content[0].text.strip()
             
             # Extract JSON from response
             if ideas_content.startswith('```json'):
@@ -206,17 +206,17 @@ class ContentCurator:
             Expanded content (150 words):
             """
             
-            expansion_response = self.client.chat.completions.create(
-            model="gpt-4o",
+            expansion_response = self.client.messages.create(
+                model="claude-sonnet-4-20250514",
                 max_tokens=800,
-            temperature=0.2,
-            messages=[
-                    {"role": "system", "content": "You are a content writer. Expand ideas into detailed, specific content. Always maintain the exact word count requested."},
+                temperature=0.2,
+                system="You are a content writer. Expand ideas into detailed, specific content. Always maintain the exact word count requested.",
+                messages=[
                     {"role": "user", "content": expansion_prompt}
                 ]
             )
-            
-            expanded_content = expansion_response.choices[0].message.content.strip()
+
+            expanded_content = expansion_response.content[0].text.strip()
             
             expanded_items.append({
                 'title': idea.get('title', 'Tech Update'),

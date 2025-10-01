@@ -6,6 +6,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Updates of the day: {{ date }}</title>
     <style>
+        /* Try to load Bebas Neue - will only work in Apple Mail, some Outlook versions */
+        @font-face {
+            font-family: 'Bebas Neue';
+            font-style: normal;
+            font-weight: 400;
+            src: url('https://fonts.gstatic.com/s/bebasneue/v14/JTUSjIg69CK48gW7PXooxW5rygbi49c.woff2') format('woff2');
+        }
+
         /* Reset and base styles */
         * {
             margin: 0;
@@ -36,11 +44,17 @@
             background-color: #ffffff;
         }
 
+
         .logo {
-            font-size: 28px;
-            font-weight: 600;
+            /* Email-safe font stack - Bebas Neue will only work in some clients */
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 32px;
+            font-weight: 400;
+            font-style: normal;
             color: #000000;
-            letter-spacing: -0.02em;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            text-align: center;
         }
 
         /* Divider */
@@ -205,24 +219,31 @@
         } */
 
         .feedback-buttons {
-            text-align: center; /* email-safe centering */
+            text-align: center;
+            /* email-safe centering */
         }
+
         /* gap fallback for email clients */
-        .feedback-buttons .feedback-btn + .feedback-btn { margin-left: 8px; }
+        .feedback-buttons .feedback-btn+.feedback-btn {
+            margin-left: 8px;
+        }
 
         .feedback-btn {
             display: inline-block !important;
             width: 40px;
             height: 40px;
-            line-height: 40px !important; /* vertical centering */
-            text-align: center !important; /* horizontal centering */
+            line-height: 40px !important;
+            /* vertical centering */
+            text-align: center !important;
+            /* horizontal centering */
             background-color: #f9f9f9;
             border: 1px solid #e5e5e5;
             border-radius: 8px;
             text-decoration: none;
             font-size: 18px;
             vertical-align: middle;
-            mso-line-height-rule: exactly; /* Outlook */
+            mso-line-height-rule: exactly;
+            /* Outlook */
             -webkit-text-size-adjust: 100%;
             transition: all 0.2s ease;
         }
@@ -292,9 +313,12 @@
         }
 
         .footer-brand {
-            font-size: 16px;
-            font-weight: 500;
+            font-family: 'Bebas Neue', sans-serif;
+            font-size: 20px;
+            font-weight: 400;
             color: #000000;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
             margin-bottom: 8px;
         }
 
@@ -362,7 +386,7 @@
     <div class="email-container">
         <!-- Header -->
         <div class="header">
-            <div class="logo">Persnally</div>
+            <div class="logo" style="font-family: 'Bebas Neue', sans-serif; font-size: 32px; font-weight: 400; color: #000000; letter-spacing: 0.05em; text-transform: uppercase;">Persnally</div>
         </div>
 
         <!-- Divider -->
@@ -413,7 +437,7 @@
 
         <!-- Footer -->
         <div class="footer">
-            <div class="footer-brand">Persnally</div>
+            <div class="footer-brand" style="font-family: 'Bebas Neue', sans-serif; font-size: 20px; font-weight: 400; color: #000000; letter-spacing: 0.05em; text-transform: uppercase;">Persnally</div>
             <div class="footer-tagline">Your personal intelligence briefing</div>
             <div class="footer-links">
                 <a href="#">Update Preferences</a>

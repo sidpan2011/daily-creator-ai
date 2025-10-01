@@ -2,14 +2,15 @@
 Behavioral Intelligence Engine
 Analyzes user behavior patterns to predict intent and needs
 """
-import openai
+import anthropic
 import json
 from typing import Dict, Any, List
 from datetime import datetime
 
 class BehaviorAnalyzer:
     def __init__(self, config):
-        self.client = openai.OpenAI(api_key=config.OPENAI_API_KEY)
+        # Use Claude instead of OpenAI to avoid quota issues
+        self.client = anthropic.Anthropic(api_key=config.ANTHROPIC_API_KEY)
     
     async def analyze_user_intent(self, github_data: dict, user_profile: dict) -> Dict[str, Any]:
         """Deep behavioral analysis with confidence scores and variety"""
@@ -83,19 +84,21 @@ class BehaviorAnalyzer:
         # CRITICAL: Use higher temperature for variety in analysis
         import random
         temperature = random.uniform(0.6, 0.8)
-        
-        response = self.client.chat.completions.create(
-            model="gpt-4o",
+
+        # Use Claude API format instead of OpenAI
+        response = self.client.messages.create(
+            model="claude-sonnet-4-20250514",
             max_tokens=1500,
             temperature=temperature,  # Higher for variety
+            system="You are a creative developer behavior analyst. Always return valid JSON. Be diverse in your analysis - explore different angles each time.",
             messages=[
-                {"role": "system", "content": "You are a creative developer behavior analyst. Always return valid JSON. Be diverse in your analysis - explore different angles each time."},
                 {"role": "user", "content": prompt}
             ]
         )
         
         try:
-            content = response.choices[0].message.content.strip()
+            # Claude response format is different from OpenAI
+            content = response.content[0].text.strip()
             
             # Try to extract JSON from response if it's wrapped in markdown
             if content.startswith('```json'):
@@ -499,27 +502,11 @@ class BehaviorAnalyzer:
             }
     
     def get_intent_based_subject_line(self, user_intent: dict, date: str) -> str:
-        """Generate personalized subject lines based on intent and location"""
-        
-        # Intent-based subject lines
-        intent_subjects = {
-            'building': f"Daily update by persnally: {date}",
-            'exploring': f"Daily update by persnally: {date}",
-            'learning': f"Daily update by persnally: {date}",
-            'launching': f"Daily update by persnally: {date}"
-        }
-        
-        # Get primary intent
-        primary_intent = user_intent.get('primary_intent', 'exploring')
-        subject = intent_subjects.get(primary_intent, f"Daily update by persnally: {date}")
-        
-        # Add location hint if there's local content
-        geo_priorities = user_intent.get('geographic_priorities', {})
-        if isinstance(geo_priorities, dict) and geo_priorities.get('local_focus'):
-            region = geo_priorities.get('region', '').title()
-            if region:
-                subject = f"{region} " + subject
-        
+        """Generate simple subject line - no personalization"""
+
+        # Simple, consistent subject line
+        subject = f"Daily update by persnally: {date}"
+
         return subject
     
     def get_personalization_note(self, user_intent: dict) -> str:

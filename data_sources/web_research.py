@@ -133,16 +133,28 @@ class WebResearchAggregator:
         return min(score, 1.0)
     
     async def gather_comprehensive_research_with_opportunities(self, user_profile: dict) -> Dict[str, Any]:
-        """Enhanced version with real opportunities"""
-        
+        """Enhanced version with real opportunities (hackathons, jobs)"""
+
         # Get the standard research data
         research_data = await self.gather_comprehensive_research(user_profile)
-        
-        # Add real opportunities
-        print("  🎯 Finding real opportunities...")
-        opportunities = await self.opportunity_finder.get_comprehensive_opportunities(
-            user_profile.get('interests', [])
-        )
-        
-        research_data["opportunities"] = opportunities
+
+        # Add real opportunities from Devpost + YC Jobs
+        print("  🎯 Finding real opportunities (hackathons + jobs)...")
+        try:
+            opportunities = await self.opportunity_finder.find_real_opportunities(
+                user_profile.get('interests', [])
+            )
+
+            # Add opportunities to research data
+            research_data["opportunities"] = opportunities
+
+            # Log what we found
+            hackathon_count = len(opportunities.get('hackathons', []))
+            job_count = len(opportunities.get('jobs', []))
+            print(f"  ✅ Opportunities: {hackathon_count} hackathons, {job_count} jobs")
+
+        except Exception as e:
+            print(f"  ⚠️ Opportunity finding failed: {e}")
+            research_data["opportunities"] = {"hackathons": [], "jobs": [], "funding": [], "events": []}
+
         return research_data
